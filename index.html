@@ -1,1 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Brand Wise Dashboard</title>
 
+  <link href="https://cdn.jsdelivr.net/npm/tabulator-tables@5.5.2/dist/css/tabulator.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="header">
+    <h1>Brand Wise Dashboard</h1>
+  </div>
+
+  <div class="top-bar">
+    <input type="text" id="search-input" class="search-box" placeholder="Search Brand..." />
+  </div>
+
+  <div class="card-container">
+
+    <div class="card">
+      <h3>Total Sales</h3>
+      <p id="total-sales">0</p>
+    </div>
+
+    <div class="card">
+      <h3>Total GMV</h3>
+      <p id="total-gmv">0</p>
+    </div>
+
+    <div class="card">
+      <h3>Total Payout</h3>
+      <p id="total-payout">0</p>
+    </div>
+
+    <div class="card">
+      <h3>Average ASP</h3>
+      <p id="avg-asp">0</p>
+    </div>
+
+    <div class="card">
+      <h3>Average AOV</h3>
+      <p id="avg-aov">0</p>
+    </div>
+
+  </div>
+
+  <div id="brand-table">
+    <div class="loader">Loading Data...</div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tabulator-tables@5.5.2/dist/js/tabulator.min.js"></script>
+
+  <script src="script.js"></script>
+
+</body>
+</html>
