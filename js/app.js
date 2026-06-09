@@ -11,16 +11,12 @@ Papa.parse(CSV_URL,{
 
     complete:function(results){
 
-        masterData = results.data;
+    console.log(results.data[0]);
 
-        calculateKPIs();
+    document.getElementById("status").innerHTML =
+    "Check Console";
 
-        document.getElementById("status")
-        .innerHTML =
-        "CSV Loaded Successfully<br>Total Rows : "
-        + masterData.length;
-
-    }
+}
 
 });
 
