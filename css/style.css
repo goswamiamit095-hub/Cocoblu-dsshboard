@@ -62,3 +62,33 @@ body{
     }
 
 }
+.table-section{
+    margin-top:20px;
+    background:#fff;
+    padding:15px;
+    border-radius:10px;
+}
+
+.table-section h2{
+    font-size:14px;
+    margin-bottom:10px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th{
+    background:#e8e8e8;
+    font-size:11px;
+    padding:8px;
+    border:1px solid #ddd;
+}
+
+td{
+    font-size:10px;
+    padding:8px;
+    border:1px solid #ddd;
+    text-align:center;
+}
