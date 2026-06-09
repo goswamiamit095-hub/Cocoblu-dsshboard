@@ -3,57 +3,37 @@ const CSV_URL =
 
 let masterData = [];
 
-Papa.parse(CSV_URL,{
+Papa.parse(CSV_URL, {
+    download: true,
+    header: true,
+    skipEmptyLines: true,
 
-    download:true,
-    header:true,
-    skipEmptyLines:true,
+    complete: function(results) {
 
-    complete:function(results){
+        masterData = results.data;
 
-    console.log(results.data[0]);
+        let firstRow = masterData[0] || {};
 
-    document.getElementById("status").innerHTML =
-    "Check Console";
+        let html = `
+            <h3>CSV Loaded Successfully</h3>
+            <p>Total Rows : ${masterData.length}</p>
 
-}
+            <h3>Detected Columns</h3>
+            <pre>${JSON.stringify(Object.keys(firstRow), null, 2)}</pre>
 
+            <h3>First Row</h3>
+            <pre>${JSON.stringify(firstRow, null, 2)}</pre>
+        `;
+
+        document.getElementById("status").innerHTML = html;
+
+    },
+
+    error: function(err){
+
+        document.getElementById("status").innerHTML =
+        "CSV Error : " + err.message;
+
+        console.error(err);
+    }
 });
-
-function calculateKPIs(){
-
-    let totalGMV = 0;
-    let totalUnits = 0;
-    let totalPayout = 0;
-
-    const asinSet = new Set();
-
-    masterData.forEach(row=>{
-
-        totalGMV += Number(row.gmv || 0);
-
-        totalUnits += Number(row.unit || 0);
-
-        totalPayout += Number(row.payout || 0);
-
-        asinSet.add(row.asin);
-
-    });
-
-    document.getElementById("totalGMV")
-    .innerText =
-    totalGMV.toLocaleString("en-IN");
-
-    document.getElementById("totalUnits")
-    .innerText =
-    totalUnits.toLocaleString("en-IN");
-
-    document.getElementById("totalPayout")
-    .innerText =
-    totalPayout.toLocaleString("en-IN");
-
-    document.getElementById("totalASIN")
-    .innerText =
-    asinSet.size.toLocaleString("en-IN");
-
-}
