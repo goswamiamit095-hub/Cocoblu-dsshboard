@@ -1,75 +1,20 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
+body{
+    background:#f2f2f2;
+    font-family:Calibri,sans-serif;
+    padding:20px;
 }
 
-body {
-  background: #f5f6fa;
-  padding: 20px;
+.container{
+    background:white;
+    padding:20px;
+    border-radius:10px;
 }
 
-.header {
-  margin-bottom: 20px;
+h1{
+    font-size:18px;
 }
 
-.header h1 {
-  font-size: 28px;
-  color: #222;
-}
-
-.top-bar {
-  display: flex;
-  gap: 15px;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-}
-
-.search-box {
-  padding: 10px 14px;
-  border-radius: 10px;
-  border: 1px solid #ccc;
-  width: 300px;
-  font-size: 14px;
-}
-
-.card-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 15px;
-  margin-bottom: 25px;
-}
-
-.card {
-  background: white;
-  padding: 18px;
-  border-radius: 14px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-}
-
-.card h3 {
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 10px;
-}
-
-.card p {
-  font-size: 24px;
-  font-weight: bold;
-  color: #111;
-}
-
-#brand-table {
-  background: white;
-  border-radius: 14px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-}
-
-.loader {
-  padding: 30px;
-  text-align: center;
-  font-size: 18px;
-  color: #444;
+#status{
+    margin-top:20px;
+    font-size:14px;
 }
