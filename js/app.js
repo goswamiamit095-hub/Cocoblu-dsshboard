@@ -33,7 +33,9 @@ Papa.parse(CSV_URL, {
 
 });
 
-function calculateKPIs(){
+function calculateKPIs()
+buildBrandTable();
+{
 
     let totalGMV = 0;
     let totalUnits = 0;
@@ -66,5 +68,81 @@ function calculateKPIs(){
 
     document.getElementById("totalASIN").innerText =
         asinSet.size.toLocaleString("en-IN");
+
+}
+function buildBrandTable(){
+
+    const brandMap = {};
+
+    masterData.forEach(row=>{
+
+        const brand = row.brand || "Unknown";
+
+        if(!brandMap[brand]){
+
+            brandMap[brand] = {
+
+                gmv:0,
+                unit:0,
+                payout:0,
+                aov:0
+
+            };
+
+        }
+
+        brandMap[brand].gmv += Number(row.gmv || 0);
+
+        brandMap[brand].unit += Number(row.unit || 0);
+
+        brandMap[brand].payout += Number(row.payout || 0);
+
+        brandMap[brand].aov += Number(row.aov || 0);
+
+    });
+
+    let html = "";
+
+    Object.keys(brandMap)
+
+    .sort()
+
+    .forEach(brand=>{
+
+        const data = brandMap[brand];
+
+        const asp =
+        data.unit > 0
+        ? data.gmv / data.unit
+        : 0;
+
+        const aov =
+        data.aov;
+
+        html += `
+
+        <tr>
+
+            <td>${brand}</td>
+
+            <td>${data.gmv.toLocaleString("en-IN")}</td>
+
+            <td>${data.unit.toLocaleString("en-IN")}</td>
+
+            <td>${asp.toFixed(2)}</td>
+
+            <td>${data.payout.toLocaleString("en-IN")}</td>
+
+            <td>${aov.toFixed(2)}</td>
+
+        </tr>
+
+        `;
+
+    });
+
+    document.querySelector(
+        "#brandTable tbody"
+    ).innerHTML = html;
 
 }
