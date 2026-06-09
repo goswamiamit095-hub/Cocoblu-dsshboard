@@ -4,33 +4,36 @@ const CSV_URL =
 let masterData = [];
 
 Papa.parse(CSV_URL, {
+
     download: true,
     header: true,
     skipEmptyLines: true,
+    dynamicTyping: true,
 
-    complete: function(results) {
+    complete: function(results){
 
         masterData = results.data;
 
-        calculateKPIs();
-
         document.getElementById("status").innerHTML =
-            "CSV Loaded Successfully<br>Total Rows : " +
-            masterData.length;
+            `CSV Loaded Successfully<br>
+             Total Rows : ${masterData.length}`;
+
+        calculateKPIs();
 
     },
 
-    error: function(error) {
+    error:function(error){
 
         console.error(error);
 
         document.getElementById("status").innerHTML =
-            "Error Loading CSV";
+            "CSV Loading Error";
 
     }
+
 });
 
-function calculateKPIs() {
+function calculateKPIs(){
 
     let totalGMV = 0;
     let totalUnits = 0;
@@ -38,7 +41,7 @@ function calculateKPIs() {
 
     const asinSet = new Set();
 
-    masterData.forEach(row => {
+    masterData.forEach(row=>{
 
         totalGMV += Number(row.gmv || 0);
 
@@ -46,7 +49,7 @@ function calculateKPIs() {
 
         totalPayout += Number(row.payout || 0);
 
-        if (row.asin) {
+        if(row.asin){
             asinSet.add(row.asin);
         }
 
@@ -63,4 +66,5 @@ function calculateKPIs() {
 
     document.getElementById("totalASIN").innerText =
         asinSet.size.toLocaleString("en-IN");
+
 }
