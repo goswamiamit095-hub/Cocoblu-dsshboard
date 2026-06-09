@@ -4,38 +4,33 @@ const CSV_URL =
 let masterData = [];
 
 Papa.parse(CSV_URL, {
-
     download: true,
     header: true,
     skipEmptyLines: true,
     dynamicTyping: true,
 
-    complete: function(results){
+    complete: function(results) {
 
         masterData = results.data;
 
         document.getElementById("status").innerHTML =
-            `CSV Loaded Successfully<br>
-             Total Rows : ${masterData.length}`;
+            `CSV Loaded Successfully<br>Total Rows : ${masterData.length}`;
 
         calculateKPIs();
 
+        buildBrandTable();
     },
 
-    error:function(error){
+    error: function(error) {
 
         console.error(error);
 
         document.getElementById("status").innerHTML =
             "CSV Loading Error";
-
     }
-
 });
 
-function calculateKPIs()
-buildBrandTable();
-{
+function calculateKPIs() {
 
     let totalGMV = 0;
     let totalUnits = 0;
@@ -43,106 +38,93 @@ buildBrandTable();
 
     const asinSet = new Set();
 
-    masterData.forEach(row=>{
+    masterData.forEach(row => {
 
-        totalGMV += Number(row.gmv || 0);
+        totalGMV += parseFloat(row.gmv) || 0;
+        totalUnits += parseFloat(row.unit) || 0;
+        totalPayout += parseFloat(row.payout) || 0;
 
-        totalUnits += Number(row.unit || 0);
-
-        totalPayout += Number(row.payout || 0);
-
-        if(row.asin){
+        if (row.asin) {
             asinSet.add(row.asin);
         }
 
     });
 
     document.getElementById("totalGMV").innerText =
-        totalGMV.toLocaleString("en-IN");
+        Math.round(totalGMV).toLocaleString("en-IN");
 
     document.getElementById("totalUnits").innerText =
-        totalUnits.toLocaleString("en-IN");
+        Math.round(totalUnits).toLocaleString("en-IN");
 
     document.getElementById("totalPayout").innerText =
-        totalPayout.toLocaleString("en-IN");
+        Math.round(totalPayout).toLocaleString("en-IN");
 
     document.getElementById("totalASIN").innerText =
         asinSet.size.toLocaleString("en-IN");
-
 }
-function buildBrandTable(){
+
+function buildBrandTable() {
 
     const brandMap = {};
 
-    masterData.forEach(row=>{
+    masterData.forEach(row => {
 
-        const brand = row.brand || "Unknown";
+        const brand = String(row.brand || "").trim();
 
-        if(!brandMap[brand]){
+        if (!brand) return;
+
+        if (!brandMap[brand]) {
 
             brandMap[brand] = {
-
-                gmv:0,
-                unit:0,
-                payout:0,
-                aov:0
-
+                gmv: 0,
+                unit: 0,
+                payout: 0,
+                aov: 0,
+                rows: 0
             };
 
         }
 
-        brandMap[brand].gmv += Number(row.gmv || 0);
+        brandMap[brand].gmv += parseFloat(row.gmv) || 0;
+        brandMap[brand].unit += parseFloat(row.unit) || 0;
+        brandMap[brand].payout += parseFloat(row.payout) || 0;
+        brandMap[brand].aov += parseFloat(row.aov) || 0;
 
-        brandMap[brand].unit += Number(row.unit || 0);
-
-        brandMap[brand].payout += Number(row.payout || 0);
-
-        brandMap[brand].aov += Number(row.aov || 0);
+        brandMap[brand].rows++;
 
     });
 
     let html = "";
 
-    Object.keys(brandMap)
+    Object.entries(brandMap)
+        .sort((a, b) => b[1].gmv - a[1].gmv)
+        .forEach(([brand, data]) => {
 
-    .sort()
+            const asp =
+                data.unit > 0
+                    ? data.gmv / data.unit
+                    : 0;
 
-    .forEach(brand=>{
+            const avgAOV =
+                data.rows > 0
+                    ? data.aov / data.rows
+                    : 0;
 
-        const data = brandMap[brand];
+            html += `
+            <tr>
+                <td>${brand}</td>
+                <td>${Math.round(data.gmv).toLocaleString("en-IN")}</td>
+                <td>${Math.round(data.unit).toLocaleString("en-IN")}</td>
+                <td>${asp.toFixed(2)}</td>
+                <td>${Math.round(data.payout).toLocaleString("en-IN")}</td>
+                <td>${avgAOV.toFixed(2)}</td>
+            </tr>
+            `;
+        });
 
-        const asp =
-        data.unit > 0
-        ? data.gmv / data.unit
-        : 0;
+    const tbody = document.querySelector("#brandTable tbody");
 
-        const aov =
-        data.aov;
-
-        html += `
-
-        <tr>
-
-            <td>${brand}</td>
-
-            <td>${data.gmv.toLocaleString("en-IN")}</td>
-
-            <td>${data.unit.toLocaleString("en-IN")}</td>
-
-            <td>${asp.toFixed(2)}</td>
-
-            <td>${data.payout.toLocaleString("en-IN")}</td>
-
-            <td>${aov.toFixed(2)}</td>
-
-        </tr>
-
-        `;
-
-    });
-
-    document.querySelector(
-        "#brandTable tbody"
-    ).innerHTML = html;
-
+    if (tbody) {
+        tbody.innerHTML = html;
+    }
 }
