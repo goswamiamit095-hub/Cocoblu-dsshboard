@@ -18,7 +18,7 @@ async function loadDashboard() {
         const brand = row.Brand || row.brand || 'Unknown';
 
         const sales = parseFloat(row.Sales || row.sales || 0);
-        const gmv = parseFloat(row.GMV || row.gmv || 0);
+        const gmv = parseFloat(ow.GMV || row.gmv || 0);
         const payout = parseFloat(row.Payout || row.payout || 0);
         const asp = parseFloat(row.ASP || row.asp || 0);
         const aov = parseFloat(row.AOV || row.aov || 0);
