@@ -2,16 +2,13 @@
 <html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Dashboard</title>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
 
-<title>Sales Dashboard</title>
-
-<link rel="stylesheet" href="css/style.css">
-
-<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 </head>
 
 <body>
@@ -19,43 +16,11 @@
 <div class="container">
 
     <div class="header">
-
         <h1>Sales Dashboard</h1>
 
         <div id="status">
             Loading...
         </div>
-
-    </div>
-
-    <!DOCTYPE html>
-<html lang="en">
-
-<head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Sales Dashboard</title>
-
-<link rel="stylesheet" href="css/style.css">
-
-<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-
-</head>
-
-<body>
-
-<div class="container">
-
-    <div class="header">
-
-        <h1>Sales Dashboard</h1>
-
-        <div id="status">
-            Loading...
-        </div>
-
     </div>
 
     <div class="kpi-grid">
@@ -68,6 +33,11 @@
         <div class="card">
             <span>Total Units</span>
             <h3 id="totalUnits">0</h3>
+        </div>
+
+        <div class="card">
+            <span>ASP</span>
+            <h3 id="totalASP">0</h3>
         </div>
 
         <div class="card">
@@ -113,18 +83,14 @@
         <table id="brandTable">
 
             <thead>
-
                 <tr>
-
                     <th>Brand</th>
                     <th>GMV</th>
                     <th>Unit</th>
                     <th>ASP</th>
                     <th>Payout</th>
                     <th>AOV</th>
-
                 </tr>
-
             </thead>
 
             <tbody></tbody>
@@ -135,67 +101,7 @@
 
 </div>
 
-<script src="js/app.js"></script>
+<script src="js/app.js?v=10"></script>
 
 </body>
-
-</html>
-
-    <div class="filter-section">
-
-        <select id="brandFilter">
-            <option value="All">All Brands</option>
-        </select>
-
-        <select id="categoryFilter">
-            <option value="All">All Categories</option>
-        </select>
-
-        <select id="statusFilter">
-            <option value="All">All Status</option>
-        </select>
-
-        <select id="yearFilter">
-            <option value="All">All Years</option>
-        </select>
-
-        <select id="monthFilter">
-            <option value="All">All Months</option>
-        </select>
-
-    </div>
-
-    <div class="table-section">
-
-        <h2>Brand Wise Sales</h2>
-
-        <table id="brandTable">
-
-            <thead>
-
-                <tr>
-
-                    <th>Brand</th>
-                    <th>GMV</th>
-                    <th>Unit</th>
-                    <th>ASP</th>
-                    <th>Payout</th>
-                    <th>AOV</th>
-
-                </tr>
-
-            </thead>
-
-            <tbody></tbody>
-
-        </table>
-
-    </div>
-
-</div>
-
-<script src="js/app.js"></script>
-
-</body>
-
 </html>
