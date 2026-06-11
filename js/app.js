@@ -20,36 +20,62 @@ const monthNames = {
 };
 
 Papa.parse(CSV_URL, {
-    download: true,
-    header: true,
-    skipEmptyLines: true,
-    dynamicTyping: true,
-    worker: true,
+    download:true,
+    header:true,
+    skipEmptyLines:true,
+    dynamicTyping:true,
+    worker:true,
 
-    complete: function(results){
+    complete:function(results){
 
-        masterData = results.data.filter(r => r.brand);
-
-        document.getElementById("status").innerHTML =
-            `CSV Loaded Successfully<br>Total Rows : ${masterData.length}`;
+        masterData = results.data.filter(
+            row => row.brand
+        );
 
         populateFilters();
 
-        const latestYear = Math.max(
-            ...masterData.map(r => Number(r.year))
+        const latestRecord = masterData.reduce(
+            (latest,current)=>{
+
+                const latestDate =
+                new Date(
+                    Number(latest.year),
+                    Number(latest.month)-1,
+                    1
+                );
+
+                const currentDate =
+                new Date(
+                    Number(current.year),
+                    Number(current.month)-1,
+                    1
+                );
+
+                return currentDate > latestDate
+                ? current
+                : latest;
+
+            }
         );
 
-        const latestMonth = Math.max(
-            ...masterData
-                .filter(r => Number(r.year) === latestYear)
-                .map(r => Number(r.month))
-        );
+        document.getElementById(
+            "yearFilter"
+        ).value =
+        String(latestRecord.year);
 
-        document.getElementById("yearFilter").value =
-            String(latestYear);
+        document.getElementById(
+            "monthFilter"
+        ).value =
+        String(latestRecord.month);
 
-        document.getElementById("monthFilter").value =
-            String(latestMonth);
+        document.getElementById(
+            "status"
+        ).innerHTML =
+        `Rows : ${masterData.length}
+        <br>
+        Default :
+        ${monthNames[latestRecord.month]}
+        ${latestRecord.year}`;
 
         applyFilters();
 
@@ -59,8 +85,10 @@ Papa.parse(CSV_URL, {
 
         console.error(error);
 
-        document.getElementById("status").innerHTML =
-            "CSV Loading Error";
+        document.getElementById(
+            "status"
+        ).innerHTML =
+        "CSV Loading Error";
 
     }
 
@@ -68,75 +96,138 @@ Papa.parse(CSV_URL, {
 
 function populateFilters(){
 
-    fillFilter("brandFilter","brand");
-    fillFilter("categoryFilter","category");
-    fillFilter("statusFilter","status");
-    fillFilter("yearFilter","year");
-    fillFilter("monthFilter","month");
+    fillFilter(
+        "brandFilter",
+        "brand"
+    );
+
+    fillFilter(
+        "categoryFilter",
+        "category"
+    );
+
+    fillFilter(
+        "statusFilter",
+        "status"
+    );
+
+    fillFilter(
+        "yearFilter",
+        "year"
+    );
+
+    fillFilter(
+        "monthFilter",
+        "month"
+    );
 
     document
-        .querySelectorAll(".filter-section select")
-        .forEach(select => {
+    .querySelectorAll(
+        ".filter-section select"
+    )
+    .forEach(select=>{
 
-            select.addEventListener(
-                "change",
-                applyFilters
+        select.addEventListener(
+            "change",
+            applyFilters
+        );
+
+    });
+
+    document
+    .getElementById("searchBox")
+    .addEventListener(
+        "input",
+        applyFilters
+    );
+
+    document
+    .getElementById("fromDate")
+    .addEventListener(
+        "change",
+        applyFilters
+    );
+
+    document
+    .getElementById("toDate")
+    .addEventListener(
+        "change",
+        applyFilters
+    );
+
+}
+
+function fillFilter(id,field){
+
+    const select =
+    document.getElementById(id);
+
+    let values =
+    [...new Set(
+        masterData.map(
+            x => String(
+                x[field]
+            ).trim()
+        )
+    )]
+    .filter(v => v !== "");
+
+    if(field==="month"){
+
+        values
+        .sort(
+            (a,b)=>
+            Number(a)-Number(b)
+        )
+        .forEach(value=>{
+
+            const option =
+            document.createElement(
+                "option"
+            );
+
+            option.value=value;
+
+            option.textContent=
+            monthNames[value];
+
+            select.appendChild(
+                option
             );
 
         });
 
-}
-
-function fillFilter(id, field){
-
-    const select =
-        document.getElementById(id);
-
-    let values =
-        [...new Set(
-            masterData.map(x => x[field])
-        )]
-        .filter(v =>
-            v !== null &&
-            v !== undefined &&
-            v !== ""
-        );
-
-    if(field === "month"){
-
-        values
-            .sort((a,b)=>Number(a)-Number(b))
-            .forEach(value=>{
-
-                const option =
-                    document.createElement("option");
-
-                option.value = value;
-                option.textContent =
-                    monthNames[value] || value;
-
-                select.appendChild(option);
-
-            });
-
         return;
+
     }
 
-    if(field === "year"){
-        values.sort((a,b)=>b-a);
+    if(field==="year"){
+
+        values.sort(
+            (a,b)=>b-a
+        );
+
     }else{
+
         values.sort();
+
     }
 
     values.forEach(value=>{
 
         const option =
-            document.createElement("option");
+        document.createElement(
+            "option"
+        );
 
-        option.value = value;
-        option.textContent = value;
+        option.value=value;
 
-        select.appendChild(option);
+        option.textContent=
+        value;
+
+        select.appendChild(
+            option
+        );
 
     });
 
@@ -144,46 +235,155 @@ function fillFilter(id, field){
 
 function applyFilters(){
 
+    const search =
+    document
+    .getElementById(
+        "searchBox"
+    )
+    .value
+    .toLowerCase()
+    .trim();
+
     const brand =
-        document.getElementById("brandFilter").value;
+    document.getElementById(
+        "brandFilter"
+    ).value;
 
     const category =
-        document.getElementById("categoryFilter").value;
+    document.getElementById(
+        "categoryFilter"
+    ).value;
 
     const status =
-        document.getElementById("statusFilter").value;
+    document.getElementById(
+        "statusFilter"
+    ).value;
 
     const year =
-        document.getElementById("yearFilter").value;
+    document.getElementById(
+        "yearFilter"
+    ).value;
 
     const month =
-        document.getElementById("monthFilter").value;
+    document.getElementById(
+        "monthFilter"
+    ).value;
+
+    const fromDate =
+    document.getElementById(
+        "fromDate"
+    ).value;
+
+    const toDate =
+    document.getElementById(
+        "toDate"
+    ).value;
 
     filteredData =
-        masterData.filter(row => {
+    masterData.filter(row=>{
 
-            return (
-                (brand === "All" ||
-                    row.brand === brand) &&
+        const searchMatch =
 
-                (category === "All" ||
-                    row.category === category) &&
+        !search ||
 
-                (status === "All" ||
-                    row.status === status) &&
+        String(
+            row.brand || ""
+        )
+        .toLowerCase()
+        .includes(search)
 
-                (year === "All" ||
-                    String(row.year) === String(year)) &&
+        ||
 
-                (month === "All" ||
-                    String(row.month) === String(month))
-            );
+        String(
+            row.asin || ""
+        )
+        .toLowerCase()
+        .includes(search)
 
-        });
+        ||
 
-    calculateKPIs(filteredData);
+        String(
+            row.vendor_sku || ""
+        )
+        .toLowerCase()
+        .includes(search)
 
-    buildBrandTable(filteredData);
+        ||
+
+        String(
+            row.erp || ""
+        )
+        .toLowerCase()
+        .includes(search);
+
+        let dateMatch = true;
+
+        if(fromDate && toDate){
+
+            const rowDate =
+            new Date(row.date);
+
+            dateMatch =
+
+            rowDate >=
+            new Date(fromDate)
+
+            &&
+
+            rowDate <=
+            new Date(toDate);
+
+        }
+
+        return (
+
+            (brand==="All" ||
+            String(row.brand)
+            .trim()===brand)
+
+            &&
+
+            (category==="All" ||
+            String(row.category)
+            .trim()===category)
+
+            &&
+
+            (status==="All" ||
+            String(row.status)
+            .trim()===status)
+
+            &&
+
+            (year==="All" ||
+            String(row.year)
+            .trim()===year)
+
+            &&
+
+            (month==="All" ||
+            String(row.month)
+            .trim()===month)
+
+            &&
+
+            searchMatch
+
+            &&
+
+            dateMatch
+
+        );
+
+    });
+
+    calculateKPIs(
+        filteredData
+    );
+
+    buildBrandTable(
+        filteredData
+    );
 
 }
 
@@ -193,39 +393,74 @@ function calculateKPIs(data){
     let totalUnits = 0;
     let totalPayout = 0;
 
-    const asinSet = new Set();
+    const asinSet =
+    new Set();
 
     data.forEach(row=>{
 
-        totalGMV += parseFloat(row.gmv) || 0;
-        totalUnits += parseFloat(row.unit) || 0;
-        totalPayout += parseFloat(row.payout) || 0;
+        totalGMV +=
+        Number(row.gmv) || 0;
+
+        totalUnits +=
+        Number(row.unit) || 0;
+
+        totalPayout +=
+        Number(row.payout) || 0;
 
         if(row.asin){
-            asinSet.add(row.asin);
+
+            asinSet.add(
+                row.asin
+            );
+
         }
 
     });
 
     const totalASP =
-        totalUnits > 0
-            ? totalGMV / totalUnits
-            : 0;
 
-    document.getElementById("totalGMV").innerText =
-        Math.round(totalGMV).toLocaleString("en-IN");
+    totalUnits > 0
 
-    document.getElementById("totalUnits").innerText =
-        Math.round(totalUnits).toLocaleString("en-IN");
+    ?
 
-    document.getElementById("totalASP").innerText =
-        totalASP.toFixed(2);
+    totalGMV /
+    totalUnits
 
-    document.getElementById("totalPayout").innerText =
-        Math.round(totalPayout).toLocaleString("en-IN");
+    :
 
-    document.getElementById("totalASIN").innerText =
-        asinSet.size.toLocaleString("en-IN");
+    0;
+
+    document.getElementById(
+        "totalGMV"
+    ).innerText =
+    Math.round(
+        totalGMV
+    ).toLocaleString("en-IN");
+
+    document.getElementById(
+        "totalUnits"
+    ).innerText =
+    Math.round(
+        totalUnits
+    ).toLocaleString("en-IN");
+
+    document.getElementById(
+        "totalASP"
+    ).innerText =
+    totalASP.toFixed(2);
+
+    document.getElementById(
+        "totalPayout"
+    ).innerText =
+    Math.round(
+        totalPayout
+    ).toLocaleString("en-IN");
+
+    document.getElementById(
+        "totalASIN"
+    ).innerText =
+    asinSet.size
+    .toLocaleString("en-IN");
 
 }
 
@@ -236,33 +471,37 @@ function buildBrandTable(data){
     data.forEach(row=>{
 
         const brand =
-            String(row.brand || "").trim();
+        String(
+            row.brand || ""
+        ).trim();
 
         if(!brand) return;
 
         if(!brandMap[brand]){
 
             brandMap[brand] = {
+
                 gmv:0,
                 unit:0,
                 payout:0,
                 aov:0,
                 rows:0
+
             };
 
         }
 
         brandMap[brand].gmv +=
-            parseFloat(row.gmv) || 0;
+        Number(row.gmv) || 0;
 
         brandMap[brand].unit +=
-            parseFloat(row.unit) || 0;
+        Number(row.unit) || 0;
 
         brandMap[brand].payout +=
-            parseFloat(row.payout) || 0;
+        Number(row.payout) || 0;
 
         brandMap[brand].aov +=
-            parseFloat(row.aov) || 0;
+        Number(row.aov) || 0;
 
         brandMap[brand].rows++;
 
@@ -271,32 +510,53 @@ function buildBrandTable(data){
     let html = "";
 
     Object.entries(brandMap)
-        .sort((a,b)=>
-            b[1].gmv - a[1].gmv
-        )
-        .forEach(([brand,data])=>{
 
-            const asp =
-                data.unit > 0
-                ? data.gmv / data.unit
-                : 0;
+    .sort(
+        (a,b)=>
+        b[1].gmv -
+        a[1].gmv
+    )
 
-            const avgAOV =
-                data.rows > 0
-                ? data.aov / data.rows
-                : 0;
+    .forEach(([brand,data])=>{
 
-            html += `
-            <tr>
-                <td>${brand}</td>
-                <td>${Math.round(data.gmv).toLocaleString("en-IN")}</td>
-                <td>${Math.round(data.unit).toLocaleString("en-IN")}</td>
-                <td>${asp.toFixed(2)}</td>
-                <td>${Math.round(data.payout).toLocaleString("en-IN")}</td>
-                <td>${avgAOV.toFixed(2)}</td>
-            </tr>
-            `;
-        });
+        const asp =
+
+        data.unit > 0
+
+        ?
+
+        data.gmv /
+        data.unit
+
+        :
+
+        0;
+
+        const avgAOV =
+
+        data.rows > 0
+
+        ?
+
+        data.aov /
+        data.rows
+
+        :
+
+        0;
+
+        html += `
+        <tr>
+            <td>${brand}</td>
+            <td>${Math.round(data.gmv).toLocaleString("en-IN")}</td>
+            <td>${Math.round(data.unit).toLocaleString("en-IN")}</td>
+            <td>${asp.toFixed(2)}</td>
+            <td>${Math.round(data.payout).toLocaleString("en-IN")}</td>
+            <td>${avgAOV.toFixed(2)}</td>
+        </tr>
+        `;
+
+    });
 
     document.querySelector(
         "#brandTable tbody"
