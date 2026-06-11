@@ -54,6 +54,11 @@
 
     <div class="filter-section">
 
+        <input
+            type="text"
+            id="searchBox"
+            placeholder="Search Brand / ASIN / SKU">
+
         <select id="brandFilter">
             <option value="All">All Brands</option>
         </select>
@@ -74,6 +79,14 @@
             <option value="All">All Months</option>
         </select>
 
+        <input
+            type="date"
+            id="fromDate">
+
+        <input
+            type="date"
+            id="toDate">
+
     </div>
 
     <div class="table-section">
@@ -83,6 +96,7 @@
         <table id="brandTable">
 
             <thead>
+
                 <tr>
                     <th>Brand</th>
                     <th>GMV</th>
@@ -91,6 +105,7 @@
                     <th>Payout</th>
                     <th>AOV</th>
                 </tr>
+
             </thead>
 
             <tbody></tbody>
@@ -101,7 +116,7 @@
 
 </div>
 
-<script src="js/app.js?v=10"></script>
+<script src="js/app.js?v=20"></script>
 
 </body>
 </html>
