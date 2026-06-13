@@ -65,14 +65,14 @@ body{
 .filter-section{
     display:grid;
     grid-template-columns:
-    repeat(4,1fr);
+    repeat(3,1fr);
     gap:10px;
     margin-bottom:15px;
 }
 
 .filter-section input,
 .filter-section select{
-    height:38px;
+    height:42px;
     border:1px solid #dcdcdc;
     border-radius:6px;
     padding:5px 10px;
@@ -155,33 +155,6 @@ tbody tr:hover{
         min-width:750px;
     }
 
-}
-/* QUICK FILTER BUTTONS */
-
-.quick-filter-section{
-    display:flex;
-    flex-wrap:wrap;
-    gap:8px;
-    margin-bottom:15px;
-}
-
-.quick-btn{
-    border:none;
-    padding:8px 14px;
-    border-radius:6px;
-    cursor:pointer;
-    background:#ffffff;
-    box-shadow:0 1px 4px rgba(0,0,0,0.08);
-    font-size:11px;
-    font-weight:600;
-}
-
-.quick-btn:hover{
-    transform:translateY(-1px);
-}
-
-.clear-btn{
-    background:#ffe5e5;
 }
 
 /* EXPORT BUTTONS */
