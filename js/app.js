@@ -355,7 +355,7 @@ function applyFilters(){
 
     filteredData =
     masterData.filter(row=>{
-
+    };
         const searchMatch =
 
         !search ||
