@@ -355,11 +355,7 @@ function applyFilters(){
 
     filteredData =
     masterData.filter(row=>{
-console.log(
-    row.day,
-    row.month,
-    row.year,
-    row.date
+
 );
         const searchMatch =
 
@@ -462,13 +458,15 @@ console.log(
 
     });
 
-    calculateKPIs(
-        filteredData
-    );
+    calculateKPIs(filteredData);
 
-    buildBrandTable(
-        filteredData
-    );
+buildBrandTable(filteredData);
+
+buildCategoryTable(filteredData);
+
+buildStatusTable(filteredData);
+
+updateCharts(filteredData);
 
 }
 
