@@ -641,5 +641,3 @@ document.querySelector(
 ).innerHTML = html;
 
 }
-
-Nhi mil Raha hi kaha hi
