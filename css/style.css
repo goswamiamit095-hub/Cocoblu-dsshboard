@@ -156,3 +156,94 @@ tbody tr:hover{
     }
 
 }
+/* QUICK FILTER BUTTONS */
+
+.quick-filter-section{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-bottom:15px;
+}
+
+.quick-btn{
+    border:none;
+    padding:8px 14px;
+    border-radius:6px;
+    cursor:pointer;
+    background:#ffffff;
+    box-shadow:0 1px 4px rgba(0,0,0,0.08);
+    font-size:11px;
+    font-weight:600;
+}
+
+.quick-btn:hover{
+    transform:translateY(-1px);
+}
+
+.clear-btn{
+    background:#ffe5e5;
+}
+
+/* EXPORT BUTTONS */
+
+.action-section{
+    display:flex;
+    gap:10px;
+    margin-bottom:15px;
+}
+
+.action-section button{
+    border:none;
+    padding:10px 15px;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:12px;
+    font-weight:600;
+    background:#fff;
+    box-shadow:0 1px 4px rgba(0,0,0,0.08);
+}
+
+/* CHARTS */
+
+.chart-section{
+    background:#fff;
+    padding:15px;
+    border-radius:10px;
+    margin-bottom:15px;
+    box-shadow:0 1px 4px rgba(0,0,0,0.08);
+}
+
+.chart-section h2{
+    font-size:14px;
+    margin-bottom:10px;
+}
+
+.chart-section canvas{
+    width:100% !important;
+    max-height:400px;
+}
+
+/* MULTIPLE TABLES SPACING */
+
+.table-section{
+    margin-bottom:15px;
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+    .quick-filter-section{
+        overflow-x:auto;
+        flex-wrap:nowrap;
+        padding-bottom:5px;
+    }
+
+    .quick-btn{
+        white-space:nowrap;
+    }
+
+    .action-section{
+        flex-direction:column;
+    }
+}
