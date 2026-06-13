@@ -155,6 +155,65 @@ function populateFilters(){
         applyFilters
     );
 
+document
+.getElementById("fromDate")
+.addEventListener("change",()=>{
+
+    document.getElementById(
+        "monthFilter"
+    ).value = "All";
+
+    document.getElementById(
+        "yearFilter"
+    ).value = "All";
+
+    applyFilters();
+
+});
+
+document
+.getElementById("toDate")
+.addEventListener("change",()=>{
+
+    document.getElementById(
+        "monthFilter"
+    ).value = "All";
+
+    document.getElementById(
+        "yearFilter"
+    ).value = "All";
+
+    applyFilters();
+
+});
+
+document
+.getElementById("monthFilter")
+.addEventListener("change",()=>{
+
+    document.getElementById(
+        "fromDate"
+    ).value = "";
+
+    document.getElementById(
+        "toDate"
+    ).value = "";
+
+});
+
+document
+.getElementById("yearFilter")
+.addEventListener("change",()=>{
+
+    document.getElementById(
+        "fromDate"
+    ).value = "";
+
+    document.getElementById(
+        "toDate"
+    ).value = "";
+
+});
 }
 
 function fillFilter(id,field){
@@ -279,6 +338,9 @@ function applyFilters(){
         "toDate"
     ).value;
 
+const useDateRange =
+fromDate !== "" &&
+toDate !== "";
     filteredData =
     masterData.filter(row=>{
 
@@ -318,22 +380,30 @@ function applyFilters(){
 
         let dateMatch = true;
 
-        if(fromDate && toDate){
+if(useDateRange){
 
-            const rowDate =
-            new Date(row.date);
+    const rowDate =
+    new Date(row.date);
 
-            dateMatch =
+    const startDate =
+    new Date(fromDate);
 
-            rowDate >=
-            new Date(fromDate)
+    const endDate =
+    new Date(toDate);
 
-            &&
+    endDate.setHours(
+        23,59,59,999
+    );
 
-            rowDate <=
-            new Date(toDate);
+    dateMatch =
 
-        }
+    rowDate >= startDate
+
+    &&
+
+    rowDate <= endDate;
+
+}
 
         return (
 
@@ -355,15 +425,22 @@ function applyFilters(){
 
             &&
 
-            (year==="All" ||
-            String(row.year)
-            .trim()===year)
+            (
+    useDateRange
+    ? true
+    :
+    (
+        (year==="All" ||
+        String(row.year)
+        .trim()===year)
 
-            &&
+        &&
 
-            (month==="All" ||
-            String(row.month)
-            .trim()===month)
+        (month==="All" ||
+        String(row.month)
+        .trim()===month)
+    )
+)
 
             &&
 
