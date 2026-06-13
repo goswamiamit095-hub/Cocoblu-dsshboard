@@ -382,26 +382,33 @@ toDate !== "";
 
 if(useDateRange){
 
-    const rowDate =
-    new Date(row.date);
+    const parts =
+    String(row.date).split("/");
 
-    const startDate =
-    new Date(fromDate);
+    if(parts.length === 3){
 
-    const endDate =
-    new Date(toDate);
+        const rowDate =
+        new Date(
+            Number(parts[2]),
+            Number(parts[1]) - 1,
+            Number(parts[0])
+        );
 
-    endDate.setHours(
-        23,59,59,999
-    );
+        const startDate =
+        new Date(fromDate);
 
-    dateMatch =
+        const endDate =
+        new Date(toDate);
 
-    rowDate >= startDate
+        endDate.setHours(
+            23,59,59,999
+        );
 
-    &&
+        dateMatch =
+            rowDate >= startDate &&
+            rowDate <= endDate;
 
-    rowDate <= endDate;
+    }
 
 }
 
