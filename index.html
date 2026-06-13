@@ -9,6 +9,9 @@
     <link rel="stylesheet" href="css/style.css">
 
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 
 <body>
@@ -53,7 +56,33 @@
     </div>
 
     <div class="filter-section">
+<div class="quick-filter-section">
 
+    <button class="quick-btn" onclick="setToday()">Today</button>
+
+    <button class="quick-btn" onclick="setYesterday()">Yesterday</button>
+
+    <button class="quick-btn" onclick="setLastDays(7)">Last 7 Days</button>
+
+    <button class="quick-btn" onclick="setLastDays(15)">Last 15 Days</button>
+
+    <button class="quick-btn" onclick="setLastDays(30)">Last 30 Days</button>
+
+    <button class="quick-btn" onclick="setLastDays(45)">Last 45 Days</button>
+
+    <button class="quick-btn" onclick="setLastDays(60)">Last 60 Days</button>
+
+    <button class="quick-btn" onclick="setLastDays(90)">Last 90 Days</button>
+
+    <button class="quick-btn" onclick="setMTD()">MTD</button>
+
+    <button class="quick-btn" onclick="setYTD()">YTD</button>
+
+    <button class="quick-btn clear-btn" onclick="clearDateFilters()">
+        Clear
+    </button>
+
+</div>
         <input
             type="text"
             id="searchBox"
@@ -88,7 +117,17 @@
             id="toDate">
 
     </div>
+<div class="action-section">
 
+    <button id="exportExcelBtn">
+        Export Excel
+    </button>
+
+    <button id="exportCsvBtn">
+        Export CSV
+    </button>
+
+</div>
     <div class="table-section">
 
         <h2>Brand Wise Sales</h2>
@@ -113,6 +152,89 @@
         </table>
 
     </div>
+
+</div>
+    <!-- Brand Chart -->
+
+<div class="chart-section">
+
+    <h2>Top Brands GMV</h2>
+
+    <canvas id="brandChart"></canvas>
+
+</div>
+
+<!-- Category Chart -->
+
+<div class="chart-section">
+
+    <h2>Category Share</h2>
+
+    <canvas id="categoryChart"></canvas>
+
+</div>
+
+<!-- Trend Chart -->
+
+<div class="chart-section">
+
+    <h2>GMV Trend</h2>
+
+    <canvas id="trendChart"></canvas>
+
+</div>
+
+<!-- Category Table -->
+
+<div class="table-section">
+
+    <h2>Category Wise Sales</h2>
+
+    <table id="categoryTable">
+
+        <thead>
+
+            <tr>
+                <th>Category</th>
+                <th>GMV</th>
+                <th>Unit</th>
+                <th>ASP</th>
+                <th>Payout</th>
+                <th>ASIN</th>
+            </tr>
+
+        </thead>
+
+        <tbody></tbody>
+
+    </table>
+
+</div>
+
+<!-- Status Table -->
+
+<div class="table-section">
+
+    <h2>Status Wise Sales</h2>
+
+    <table id="statusTable">
+
+        <thead>
+
+            <tr>
+                <th>Status</th>
+                <th>GMV</th>
+                <th>Unit</th>
+                <th>ASP</th>
+                <th>Payout</th>
+                <th>ASIN</th>
+            </tr>
+
+        </thead>
+
+        <tbody></tbody>
+
+    </table>
 
 </div>
 
