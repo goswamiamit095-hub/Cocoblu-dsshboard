@@ -5,169 +5,169 @@ let masterData = [];
 let filteredData = [];
 
 const monthNames = {
-    1:"Jan",
-    2:"Feb",
-    3:"Mar",
-    4:"Apr",
-    5:"May",
-    6:"Jun",
-    7:"Jul",
-    8:"Aug",
-    9:"Sep",
-    10:"Oct",
-    11:"Nov",
-    12:"Dec"
+1:"Jan",
+2:"Feb",
+3:"Mar",
+4:"Apr",
+5:"May",
+6:"Jun",
+7:"Jul",
+8:"Aug",
+9:"Sep",
+10:"Oct",
+11:"Nov",
+12:"Dec"
 };
 
 Papa.parse(CSV_URL, {
-    download:true,
-    header:true,
-    skipEmptyLines:true,
-    dynamicTyping:true,
-    worker:true,
+download:true,
+header:true,
+skipEmptyLines:true,
+dynamicTyping:true,
+worker:true,
 
-    complete:function(results){
+complete:function(results){  
 
-        masterData = results.data.filter(
-            row => row.brand
-        );
+    masterData = results.data.filter(  
+        row => row.brand  
+    );  
 
-        populateFilters();
+    populateFilters();  
 
-        const latestRecord = masterData.reduce(
-            (latest,current)=>{
+    const latestRecord = masterData.reduce(  
+        (latest,current)=>{  
 
-                const latestDate =
-                new Date(
-                    Number(latest.year),
-                    Number(latest.month)-1,
-                    1
-                );
+            const latestDate =  
+            new Date(  
+                Number(latest.year),  
+                Number(latest.month)-1,  
+                1  
+            );  
 
-                const currentDate =
-                new Date(
-                    Number(current.year),
-                    Number(current.month)-1,
-                    1
-                );
+            const currentDate =  
+            new Date(  
+                Number(current.year),  
+                Number(current.month)-1,  
+                1  
+            );  
 
-                return currentDate > latestDate
-                ? current
-                : latest;
+            return currentDate > latestDate  
+            ? current  
+            : latest;  
 
-            }
-        );
+        }  
+    );  
 
-        document.getElementById(
-            "yearFilter"
-        ).value =
-        String(latestRecord.year);
+    document.getElementById(  
+        "yearFilter"  
+    ).value =  
+    String(latestRecord.year);  
 
-        document.getElementById(
-            "monthFilter"
-        ).value =
-        String(latestRecord.month);
+    document.getElementById(  
+        "monthFilter"  
+    ).value =  
+    String(latestRecord.month);  
 
-        document.getElementById(
-            "status"
-        ).innerHTML =
-        `Rows : ${masterData.length}
-        <br>
-        Default :
-        ${monthNames[latestRecord.month]}
-        ${latestRecord.year}`;
+    document.getElementById(  
+        "status"  
+    ).innerHTML =  
+    `Rows : ${masterData.length}  
+    <br>  
+    Default :  
+    ${monthNames[latestRecord.month]}  
+    ${latestRecord.year}`;  
 
-        applyFilters();
+    applyFilters();  
 
-    },
+},  
 
-    error:function(error){
+error:function(error){  
 
-        console.error(error);
+    console.error(error);  
 
-        document.getElementById(
-            "status"
-        ).innerHTML =
-        "CSV Loading Error";
+    document.getElementById(  
+        "status"  
+    ).innerHTML =  
+    "CSV Loading Error";  
 
-    }
+}
 
 });
 
 function populateFilters(){
 
-    fillFilter(
-        "brandFilter",
-        "brand"
-    );
+fillFilter(  
+    "brandFilter",  
+    "brand"  
+);  
 
-    fillFilter(
-        "categoryFilter",
-        "category"
-    );
+fillFilter(  
+    "categoryFilter",  
+    "category"  
+);  
 
-    fillFilter(
-        "statusFilter",
-        "status"
-    );
+fillFilter(  
+    "statusFilter",  
+    "status"  
+);  
 
-    fillFilter(
-        "yearFilter",
-        "year"
-    );
+fillFilter(  
+    "yearFilter",  
+    "year"  
+);  
 
-    fillFilter(
-        "monthFilter",
-        "month"
-    );
+fillFilter(  
+    "monthFilter",  
+    "month"  
+);  
 
-    document
-    .querySelectorAll(
-        ".filter-section select"
-    )
-    .forEach(select=>{
+document  
+.querySelectorAll(  
+    ".filter-section select"  
+)  
+.forEach(select=>{  
 
-        select.addEventListener(
-            "change",
-            applyFilters
-        );
+    select.addEventListener(  
+        "change",  
+        applyFilters  
+    );  
 
-    });
+});  
 
-    document
-    .getElementById("searchBox")
-    .addEventListener(
-        "input",
-        applyFilters
-    );
+document  
+.getElementById("searchBox")  
+.addEventListener(  
+    "input",  
+    applyFilters  
+);  
 
-    document
-    .getElementById("fromDate")
-    .addEventListener(
-        "change",
-        applyFilters
-    );
+document  
+.getElementById("fromDate")  
+.addEventListener(  
+    "change",  
+    applyFilters  
+);  
 
-    document
-    .getElementById("toDate")
-    .addEventListener(
-        "change",
-        applyFilters
-    );
+document  
+.getElementById("toDate")  
+.addEventListener(  
+    "change",  
+    applyFilters  
+);
 
 document
 .getElementById("fromDate")
 .addEventListener("change",()=>{
 
-    document.getElementById(
-        "monthFilter"
-    ).value = "All";
+document.getElementById(  
+    "monthFilter"  
+).value = "All";  
 
-    document.getElementById(
-        "yearFilter"
-    ).value = "All";
+document.getElementById(  
+    "yearFilter"  
+).value = "All";  
 
-    applyFilters();
+applyFilters();
 
 });
 
@@ -175,15 +175,15 @@ document
 .getElementById("toDate")
 .addEventListener("change",()=>{
 
-    document.getElementById(
-        "monthFilter"
-    ).value = "All";
+document.getElementById(  
+    "monthFilter"  
+).value = "All";  
 
-    document.getElementById(
-        "yearFilter"
-    ).value = "All";
+document.getElementById(  
+    "yearFilter"  
+).value = "All";  
 
-    applyFilters();
+applyFilters();
 
 });
 
@@ -191,13 +191,13 @@ document
 .getElementById("monthFilter")
 .addEventListener("change",()=>{
 
-    document.getElementById(
-        "fromDate"
-    ).value = "";
+document.getElementById(  
+    "fromDate"  
+).value = "";  
 
-    document.getElementById(
-        "toDate"
-    ).value = "";
+document.getElementById(  
+    "toDate"  
+).value = "";
 
 });
 
@@ -205,445 +205,441 @@ document
 .getElementById("yearFilter")
 .addEventListener("change",()=>{
 
-    document.getElementById(
-        "fromDate"
-    ).value = "";
+document.getElementById(  
+    "fromDate"  
+).value = "";  
 
-    document.getElementById(
-        "toDate"
-    ).value = "";
+document.getElementById(  
+    "toDate"  
+).value = "";
 
 });
 }
 
 function fillFilter(id,field){
 
-    const select =
-    document.getElementById(id);
+const select =  
+document.getElementById(id);  
 
-    let values =
-    [...new Set(
-        masterData.map(
-            x => String(
-                x[field]
-            ).trim()
-        )
-    )]
-    .filter(v => v !== "");
+let values =  
+[...new Set(  
+    masterData.map(  
+        x => String(  
+            x[field]  
+        ).trim()  
+    )  
+)]  
+.filter(v => v !== "");  
 
-    if(field==="month"){
+if(field==="month"){  
 
-        values
-        .sort(
-            (a,b)=>
-            Number(a)-Number(b)
-        )
-        .forEach(value=>{
+    values  
+    .sort(  
+        (a,b)=>  
+        Number(a)-Number(b)  
+    )  
+    .forEach(value=>{  
 
-            const option =
-            document.createElement(
-                "option"
-            );
+        const option =  
+        document.createElement(  
+            "option"  
+        );  
 
-            option.value=value;
+        option.value=value;  
 
-            option.textContent=
-            monthNames[value];
+        option.textContent=  
+        monthNames[value];  
 
-            select.appendChild(
-                option
-            );
+        select.appendChild(  
+            option  
+        );  
 
-        });
+    });  
 
-        return;
+    return;  
 
-    }
+}  
 
-    if(field==="year"){
+if(field==="year"){  
 
-        values.sort(
-            (a,b)=>b-a
-        );
+    values.sort(  
+        (a,b)=>b-a  
+    );  
 
-    }else{
+}else{  
 
-        values.sort();
+    values.sort();  
 
-    }
+}  
 
-    values.forEach(value=>{
+values.forEach(value=>{  
 
-        const option =
-        document.createElement(
-            "option"
-        );
+    const option =  
+    document.createElement(  
+        "option"  
+    );  
 
-        option.value=value;
+    option.value=value;  
 
-        option.textContent=
-        value;
+    option.textContent=  
+    value;  
 
-        select.appendChild(
-            option
-        );
+    select.appendChild(  
+        option  
+    );  
 
-    });
+});
 
 }
 
 function applyFilters(){
 
-    const search =
-    document
-    .getElementById(
-        "searchBox"
-    )
-    .value
-    .toLowerCase()
-    .trim();
+const search =  
+document  
+.getElementById(  
+    "searchBox"  
+)  
+.value  
+.toLowerCase()  
+.trim();  
 
-    const brand =
-    document.getElementById(
-        "brandFilter"
-    ).value;
+const brand =  
+document.getElementById(  
+    "brandFilter"  
+).value;  
 
-    const category =
-    document.getElementById(
-        "categoryFilter"
-    ).value;
+const category =  
+document.getElementById(  
+    "categoryFilter"  
+).value;  
 
-    const status =
-    document.getElementById(
-        "statusFilter"
-    ).value;
+const status =  
+document.getElementById(  
+    "statusFilter"  
+).value;  
 
-    const year =
-    document.getElementById(
-        "yearFilter"
-    ).value;
+const year =  
+document.getElementById(  
+    "yearFilter"  
+).value;  
 
-    const month =
-    document.getElementById(
-        "monthFilter"
-    ).value;
+const month =  
+document.getElementById(  
+    "monthFilter"  
+).value;  
 
-    const fromDate =
-    document.getElementById(
-        "fromDate"
-    ).value;
+const fromDate =  
+document.getElementById(  
+    "fromDate"  
+).value;  
 
-    const toDate =
-    document.getElementById(
-        "toDate"
-    ).value;
+const toDate =  
+document.getElementById(  
+    "toDate"  
+).value;
 
 const useDateRange =
 fromDate !== "" &&
 toDate !== "";
-    filteredData =
-    masterData.filter(row=>{
+filteredData =
+masterData.filter(row=>{
 
-        const searchMatch =
+const searchMatch =  
 
-        !search ||
+    !search ||  
 
-        String(
-            row.brand || ""
-        )
-        .toLowerCase()
-        .includes(search)
+    String(  
+        row.brand || ""  
+    )  
+    .toLowerCase()  
+    .includes(search)  
 
-        ||
+    ||  
 
-        String(
-            row.asin || ""
-        )
-        .toLowerCase()
-        .includes(search)
+    String(  
+        row.asin || ""  
+    )  
+    .toLowerCase()  
+    .includes(search)  
 
-        ||
+    ||  
 
-        String(
-            row.vendor_sku || ""
-        )
-        .toLowerCase()
-        .includes(search)
+    String(  
+        row.vendor_sku || ""  
+    )  
+    .toLowerCase()  
+    .includes(search)  
 
-        ||
+    ||  
 
-        String(
-            row.erp || ""
-        )
-        .toLowerCase()
-        .includes(search);
+    String(  
+        row.erp || ""  
+    )  
+    .toLowerCase()  
+    .includes(search);  
 
-        let dateMatch = true;
+    let dateMatch = true;
 
 if(useDateRange){
 
-    const parts =
-    String(row.date).split("/");
+const rowDate =  
+new Date(row.date);  
 
-    if(parts.length === 3){
+const startDate =  
+new Date(fromDate);  
 
-        const rowDate =
-        new Date(
-            Number(parts[2]),
-            Number(parts[1]) - 1,
-            Number(parts[0])
-        );
+const endDate =  
+new Date(toDate);  
 
-        const startDate =
-        new Date(fromDate);
+endDate.setHours(  
+    23,59,59,999  
+);  
 
-        const endDate =
-        new Date(toDate);
+dateMatch =  
 
-        endDate.setHours(
-            23,59,59,999
-        );
+rowDate >= startDate  
 
-        dateMatch =
-            rowDate >= startDate &&
-            rowDate <= endDate;
+&&  
 
-    }
+rowDate <= endDate;
 
 }
 
-        return (
+return (  
 
-            (brand==="All" ||
-            String(row.brand)
-            .trim()===brand)
+        (brand==="All" ||  
+        String(row.brand)  
+        .trim()===brand)  
 
-            &&
+        &&  
 
-            (category==="All" ||
-            String(row.category)
-            .trim()===category)
+        (category==="All" ||  
+        String(row.category)  
+        .trim()===category)  
 
-            &&
+        &&  
 
-            (status==="All" ||
-            String(row.status)
-            .trim()===status)
+        (status==="All" ||  
+        String(row.status)  
+        .trim()===status)  
 
-            &&
+        &&  
 
-            (
-    useDateRange
-    ? true
-    :
-    (
-        (year==="All" ||
-        String(row.year)
-        .trim()===year)
+        (  
+useDateRange  
+? true  
+:  
+(  
+    (year==="All" ||  
+    String(row.year)  
+    .trim()===year)  
 
-        &&
+    &&  
 
-        (month==="All" ||
-        String(row.month)
-        .trim()===month)
-    )
+    (month==="All" ||  
+    String(row.month)  
+    .trim()===month)  
 )
 
-            &&
+)
 
-            searchMatch
+&&  
 
-            &&
+        searchMatch  
 
-            dateMatch
+        &&  
 
-        );
+        dateMatch  
 
-    });
+    );  
 
-    calculateKPIs(
-        filteredData
-    );
+});  
 
-    buildBrandTable(
-        filteredData
-    );
+calculateKPIs(  
+    filteredData  
+);  
+
+buildBrandTable(  
+    filteredData  
+);
 
 }
 
 function calculateKPIs(data){
 
-    let totalGMV = 0;
-    let totalUnits = 0;
-    let totalPayout = 0;
+let totalGMV = 0;  
+let totalUnits = 0;  
+let totalPayout = 0;  
 
-    const asinSet =
-    new Set();
+const asinSet =  
+new Set();  
 
-    data.forEach(row=>{
+data.forEach(row=>{  
 
-        totalGMV +=
-        Number(row.gmv) || 0;
+    totalGMV +=  
+    Number(row.gmv) || 0;  
 
-        totalUnits +=
-        Number(row.unit) || 0;
+    totalUnits +=  
+    Number(row.unit) || 0;  
 
-        totalPayout +=
-        Number(row.payout) || 0;
+    totalPayout +=  
+    Number(row.payout) || 0;  
 
-        if(row.asin){
+    if(row.asin){  
 
-            asinSet.add(
-                row.asin
-            );
+        asinSet.add(  
+            row.asin  
+        );  
 
-        }
+    }  
 
-    });
+});  
 
-    const totalASP =
+const totalASP =  
 
-    totalUnits > 0
+totalUnits > 0  
 
-    ?
+?  
 
-    totalGMV /
-    totalUnits
+totalGMV /  
+totalUnits  
 
-    :
+:  
 
-    0;
+0;  
 
-    document.getElementById(
-        "totalGMV"
-    ).innerText =
-    Math.round(
-        totalGMV
-    ).toLocaleString("en-IN");
+document.getElementById(  
+    "totalGMV"  
+).innerText =  
+Math.round(  
+    totalGMV  
+).toLocaleString("en-IN");  
 
-    document.getElementById(
-        "totalUnits"
-    ).innerText =
-    Math.round(
-        totalUnits
-    ).toLocaleString("en-IN");
+document.getElementById(  
+    "totalUnits"  
+).innerText =  
+Math.round(  
+    totalUnits  
+).toLocaleString("en-IN");  
 
-    document.getElementById(
-        "totalASP"
-    ).innerText =
-    totalASP.toFixed(2);
+document.getElementById(  
+    "totalASP"  
+).innerText =  
+totalASP.toFixed(2);  
 
-    document.getElementById(
-        "totalPayout"
-    ).innerText =
-    Math.round(
-        totalPayout
-    ).toLocaleString("en-IN");
+document.getElementById(  
+    "totalPayout"  
+).innerText =  
+Math.round(  
+    totalPayout  
+).toLocaleString("en-IN");  
 
-    document.getElementById(
-        "totalASIN"
-    ).innerText =
-    asinSet.size
-    .toLocaleString("en-IN");
+document.getElementById(  
+    "totalASIN"  
+).innerText =  
+asinSet.size  
+.toLocaleString("en-IN");
 
 }
 
 function buildBrandTable(data){
 
-    const brandMap = {};
+const brandMap = {};  
 
-    data.forEach(row=>{
+data.forEach(row=>{  
 
-        const brand =
-        String(
-            row.brand || ""
-        ).trim();
+    const brand =  
+    String(  
+        row.brand || ""  
+    ).trim();  
 
-        if(!brand) return;
+    if(!brand) return;  
 
-        if(!brandMap[brand]){
+    if(!brandMap[brand]){  
 
-            brandMap[brand] = {
+        brandMap[brand] = {  
 
-                gmv:0,
-                unit:0,
-                payout:0,
-                aov:0,
-                rows:0
+            gmv:0,  
+            unit:0,  
+            payout:0,  
+            aov:0,  
+            rows:0  
 
-            };
+        };  
 
-        }
+    }  
 
-        brandMap[brand].gmv +=
-        Number(row.gmv) || 0;
+    brandMap[brand].gmv +=  
+    Number(row.gmv) || 0;  
 
-        brandMap[brand].unit +=
-        Number(row.unit) || 0;
+    brandMap[brand].unit +=  
+    Number(row.unit) || 0;  
 
-        brandMap[brand].payout +=
-        Number(row.payout) || 0;
+    brandMap[brand].payout +=  
+    Number(row.payout) || 0;  
 
-        brandMap[brand].aov +=
-        Number(row.aov) || 0;
+    brandMap[brand].aov +=  
+    Number(row.aov) || 0;  
 
-        brandMap[brand].rows++;
+    brandMap[brand].rows++;  
 
-    });
+});  
 
-    let html = "";
+let html = "";  
 
-    Object.entries(brandMap)
+Object.entries(brandMap)  
 
-    .sort(
-        (a,b)=>
-        b[1].gmv -
-        a[1].gmv
-    )
+.sort(  
+    (a,b)=>  
+    b[1].gmv -  
+    a[1].gmv  
+)  
 
-    .forEach(([brand,data])=>{
+.forEach(([brand,data])=>{  
 
-        const asp =
+    const asp =  
 
-        data.unit > 0
+    data.unit > 0  
 
-        ?
+    ?  
 
-        data.gmv /
-        data.unit
+    data.gmv /  
+    data.unit  
 
-        :
+    :  
 
-        0;
+    0;  
 
-        const avgAOV =
+    const avgAOV =  
 
-        data.rows > 0
+    data.rows > 0  
 
-        ?
+    ?  
 
-        data.aov /
-        data.rows
+    data.aov /  
+    data.rows  
 
-        :
+    :  
 
-        0;
+    0;  
 
-        html += `
-        <tr>
-            <td>${brand}</td>
-            <td>${Math.round(data.gmv).toLocaleString("en-IN")}</td>
-            <td>${Math.round(data.unit).toLocaleString("en-IN")}</td>
-            <td>${asp.toFixed(2)}</td>
-            <td>${Math.round(data.payout).toLocaleString("en-IN")}</td>
-            <td>${avgAOV.toFixed(2)}</td>
-        </tr>
-        `;
+    html += `  
+    <tr>  
+        <td>${brand}</td>  
+        <td>${Math.round(data.gmv).toLocaleString("en-IN")}</td>  
+        <td>${Math.round(data.unit).toLocaleString("en-IN")}</td>  
+        <td>${asp.toFixed(2)}</td>  
+        <td>${Math.round(data.payout).toLocaleString("en-IN")}</td>  
+        <td>${avgAOV.toFixed(2)}</td>  
+    </tr>  
+    `;  
 
-    });
+});  
 
-    document.querySelector(
-        "#brandTable tbody"
-    ).innerHTML = html;
+document.querySelector(  
+    "#brandTable tbody"  
+).innerHTML = html;
 
 }
+
+Nhi mil Raha hi kaha hi
