@@ -355,7 +355,12 @@ function applyFilters(){
 
     filteredData =
     masterData.filter(row=>{
-
+console.log(
+    row.day,
+    row.month,
+    row.year,
+    row.date
+);
         const searchMatch =
 
         !search ||
