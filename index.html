@@ -10,8 +10,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 
 <body>
@@ -19,11 +18,13 @@
 <div class="container">
 
     <div class="header">
+
         <h1>Sales Dashboard</h1>
 
         <div id="status">
             Loading...
         </div>
+
     </div>
 
     <div class="kpi-grid">
@@ -55,22 +56,10 @@
 
     </div>
 
-    <div class="filter-section">
-<select id="quickDateFilter">
-    <option value="">Quick Date Filter</option>
-    <option value="today">Today</option>
-    <option value="yesterday">Yesterday</option>
-    <option value="7">Last 7 Days</option>
-    <option value="15">Last 15 Days</option>
-    <option value="30">Last 30 Days</option>
-    <option value="45">Last 45 Days</option>
-    <option value="60">Last 60 Days</option>
-    <option value="90">Last 90 Days</option>
-    <option value="mtd">MTD</option>
-    <option value="ytd">YTD</option>
-</select>
+    <!-- FILTERS -->
 
-</div>
+    <div class="filter-section">
+
         <input
             type="text"
             id="searchBox"
@@ -93,43 +82,49 @@
         </select>
 
         <select id="monthFilter">
-    <option value="All">All Months</option>
-</select>
+            <option value="All">All Months</option>
+        </select>
 
-<select id="quickDateFilter">
-    <option value="">Quick Date Filter</option>
-    <option value="today">Today</option>
-    <option value="yesterday">Yesterday</option>
-    <option value="7">Last 7 Days</option>
-    <option value="15">Last 15 Days</option>
-    <option value="30">Last 30 Days</option>
-    <option value="45">Last 45 Days</option>
-    <option value="60">Last 60 Days</option>
-    <option value="90">Last 90 Days</option>
-    <option value="mtd">MTD</option>
-    <option value="ytd">YTD</option>
-</select>
+        <select id="quickDateFilter">
+            <option value="">Quick Date Filter</option>
+            <option value="today">Today</option>
+            <option value="yesterday">Yesterday</option>
+            <option value="7">Last 7 Days</option>
+            <option value="15">Last 15 Days</option>
+            <option value="30">Last 30 Days</option>
+            <option value="45">Last 45 Days</option>
+            <option value="60">Last 60 Days</option>
+            <option value="90">Last 90 Days</option>
+            <option value="mtd">MTD</option>
+            <option value="ytd">YTD</option>
+        </select>
 
-<input
-    type="date"
-    id="fromDate">
+        <input
+            type="date"
+            id="fromDate">
 
-<input
-    type="date"
-    id="toDate">
+        <input
+            type="date"
+            id="toDate">
 
     </div>
-<div class="action-section">
 
-    <button id="exportExcelBtn">
-        Export Excel
-    </button>
+    <!-- ACTION BUTTONS -->
 
-    <button id="exportCsvBtn">
-        Export CSV
-    </button>
+    <div class="action-section">
 
-</div>
+        <button id="exportExcelBtn">
+            Export Excel
+        </button>
+
+        <button id="exportCsvBtn">
+            Export CSV
+        </button>
+
+    </div>
+
+    <!-- BRAND TABLE -->
+
     <div class="table-section">
 
         <h2>Brand Wise Sales</h2>
@@ -155,92 +150,89 @@
 
     </div>
 
-</div>
-    <!-- Brand Chart -->
+    <!-- CHARTS -->
 
-<div class="chart-section">
+    <div class="chart-section">
 
-    <h2>Top Brands GMV</h2>
+        <h2>Top Brands GMV</h2>
 
-    <canvas id="brandChart"></canvas>
+        <canvas id="brandChart"></canvas>
 
-</div>
+    </div>
 
-<!-- Category Chart -->
+    <div class="chart-section">
 
-<div class="chart-section">
+        <h2>Category Share</h2>
 
-    <h2>Category Share</h2>
+        <canvas id="categoryChart"></canvas>
 
-    <canvas id="categoryChart"></canvas>
+    </div>
 
-</div>
+    <div class="chart-section">
 
-<!-- Trend Chart -->
+        <h2>GMV Trend</h2>
 
-<div class="chart-section">
+        <canvas id="trendChart"></canvas>
 
-    <h2>GMV Trend</h2>
+    </div>
 
-    <canvas id="trendChart"></canvas>
+    <!-- CATEGORY TABLE -->
 
-</div>
+    <div class="table-section">
 
-<!-- Category Table -->
+        <h2>Category Wise Sales</h2>
 
-<div class="table-section">
+        <table id="categoryTable">
 
-    <h2>Category Wise Sales</h2>
+            <thead>
 
-    <table id="categoryTable">
+                <tr>
+                    <th>Category</th>
+                    <th>GMV</th>
+                    <th>Unit</th>
+                    <th>ASP</th>
+                    <th>Payout</th>
+                    <th>ASIN</th>
+                </tr>
 
-        <thead>
+            </thead>
 
-            <tr>
-                <th>Category</th>
-                <th>GMV</th>
-                <th>Unit</th>
-                <th>ASP</th>
-                <th>Payout</th>
-                <th>ASIN</th>
-            </tr>
+            <tbody></tbody>
 
-        </thead>
+        </table>
 
-        <tbody></tbody>
+    </div>
 
-    </table>
+    <!-- STATUS TABLE -->
 
-</div>
+    <div class="table-section">
 
-<!-- Status Table -->
+        <h2>Status Wise Sales</h2>
 
-<div class="table-section">
+        <table id="statusTable">
 
-    <h2>Status Wise Sales</h2>
+            <thead>
 
-    <table id="statusTable">
+                <tr>
+                    <th>Status</th>
+                    <th>GMV</th>
+                    <th>Unit</th>
+                    <th>ASP</th>
+                    <th>Payout</th>
+                    <th>ASIN</th>
+                </tr>
 
-        <thead>
+            </thead>
 
-            <tr>
-                <th>Status</th>
-                <th>GMV</th>
-                <th>Unit</th>
-                <th>ASP</th>
-                <th>Payout</th>
-                <th>ASIN</th>
-            </tr>
+            <tbody></tbody>
 
-        </thead>
+        </table>
 
-        <tbody></tbody>
-
-    </table>
+    </div>
 
 </div>
 
-<script src="js/app.js?v=20"></script>
+<script src="js/app.js?v=25"></script>
 
 </body>
 </html>
