@@ -294,174 +294,176 @@ values.forEach(value=>{
 
 function applyFilters(){
 
-const search =  
-document  
-.getElementById(  
-    "searchBox"  
-)  
-.value  
-.toLowerCase()  
-.trim();  
+    const search =
+    document
+    .getElementById("searchBox")
+    .value
+    .toLowerCase()
+    .trim();
 
-const brand =  
-document.getElementById(  
-    "brandFilter"  
-).value;  
+    const brand =
+    document.getElementById(
+        "brandFilter"
+    ).value;
 
-const category =  
-document.getElementById(  
-    "categoryFilter"  
-).value;  
+    const category =
+    document.getElementById(
+        "categoryFilter"
+    ).value;
 
-const status =  
-document.getElementById(  
-    "statusFilter"  
-).value;  
+    const status =
+    document.getElementById(
+        "statusFilter"
+    ).value;
 
-const year =  
-document.getElementById(  
-    "yearFilter"  
-).value;  
+    const year =
+    document.getElementById(
+        "yearFilter"
+    ).value;
 
-const month =  
-document.getElementById(  
-    "monthFilter"  
-).value;  
+    const month =
+    document.getElementById(
+        "monthFilter"
+    ).value;
 
-const fromDate =  
-document.getElementById(  
-    "fromDate"  
-).value;  
+    const fromDate =
+    document.getElementById(
+        "fromDate"
+    ).value;
 
-const toDate =  
-document.getElementById(  
-    "toDate"  
-).value;
+    const toDate =
+    document.getElementById(
+        "toDate"
+    ).value;
 
-const useDateRange =
-fromDate !== "" &&
-toDate !== "";
-filteredData =
-masterData.filter(row=>{
+    const useDateRange =
+    fromDate !== "" ||
+    toDate !== "";
 
-const searchMatch =  
+    let startDate = null;
+    let endDate = null;
 
-    !search ||  
+    if(fromDate){
+        startDate = new Date(fromDate);
+        startDate.setHours(0,0,0,0);
+    }
 
-    String(  
-        row.brand || ""  
-    )  
-    .toLowerCase()  
-    .includes(search)  
+    if(toDate){
+        endDate = new Date(toDate);
+        endDate.setHours(23,59,59,999);
+    }
 
-    ||  
+    filteredData =
+    masterData.filter(row=>{
 
-    String(  
-        row.asin || ""  
-    )  
-    .toLowerCase()  
-    .includes(search)  
+        const searchMatch =
 
-    ||  
+        !search ||
 
-    String(  
-        row.vendor_sku || ""  
-    )  
-    .toLowerCase()  
-    .includes(search)  
+        String(row.brand || "")
+        .toLowerCase()
+        .includes(search)
 
-    ||  
+        ||
 
-    String(  
-        row.erp || ""  
-    )  
-    .toLowerCase()  
-    .includes(search);  
+        String(row.asin || "")
+        .toLowerCase()
+        .includes(search)
 
-    let dateMatch = true;
+        ||
 
-if(useDateRange){
+        String(row.vendor_sku || "")
+        .toLowerCase()
+        .includes(search)
 
-const rowDate =  
-new Date(row.date);  
+        ||
 
-const startDate =  
-new Date(fromDate);  
+        String(row.erp || "")
+        .toLowerCase()
+        .includes(search);
 
-const endDate =  
-new Date(toDate);  
+        let dateMatch = true;
 
-endDate.setHours(  
-    23,59,59,999  
-);  
+        if(useDateRange){
 
-dateMatch =  
+            const rowDate = new Date(
+                Number(row.year),
+                Number(row.month) - 1,
+                Number(row.day)
+            );
 
-rowDate >= startDate  
+            if(startDate){
+                dateMatch =
+                dateMatch &&
+                rowDate >= startDate;
+            }
 
-&&  
+            if(endDate){
+                dateMatch =
+                dateMatch &&
+                rowDate <= endDate;
+            }
+        }
 
-rowDate <= endDate;
+        return (
 
-}
+            (brand === "All" ||
+            String(row.brand)
+            .trim() === brand)
 
-return (  
+            &&
 
-        (brand==="All" ||  
-        String(row.brand)  
-        .trim()===brand)  
+            (category === "All" ||
+            String(row.category)
+            .trim() === category)
 
-        &&  
+            &&
 
-        (category==="All" ||  
-        String(row.category)  
-        .trim()===category)  
+            (status === "All" ||
+            String(row.status)
+            .trim() === status)
 
-        &&  
+            &&
 
-        (status==="All" ||  
-        String(row.status)  
-        .trim()===status)  
+            (
+                useDateRange
 
-        &&  
+                ? true
 
-        (  
-useDateRange  
-? true  
-:  
-(  
-    (year==="All" ||  
-    String(row.year)  
-    .trim()===year)  
+                :
 
-    &&  
+                (
+                    (year === "All" ||
+                    String(row.year)
+                    .trim() === year)
 
-    (month==="All" ||  
-    String(row.month)  
-    .trim()===month)  
-)
+                    &&
 
-)
+                    (month === "All" ||
+                    String(row.month)
+                    .trim() === month)
+                )
+            )
 
-&&  
+            &&
 
-        searchMatch  
+            searchMatch
 
-        &&  
+            &&
 
-        dateMatch  
+            dateMatch
 
-    );  
+        );
 
-});  
+    });
 
-calculateKPIs(  
-    filteredData  
-);  
+    calculateKPIs(
+        filteredData
+    );
 
-buildBrandTable(  
-    filteredData  
-);
+    buildBrandTable(
+        filteredData
+    );
 
 }
 
