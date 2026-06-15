@@ -456,7 +456,7 @@ function applyFilters(){
 
         );
 
-    });
+    );
 
     calculateKPIs(filteredData);
 
