@@ -455,9 +455,7 @@ function applyFilters(){
             dateMatch
 
         );
-
-    );
-
+    
     calculateKPIs(filteredData);
 
 buildBrandTable(filteredData);
