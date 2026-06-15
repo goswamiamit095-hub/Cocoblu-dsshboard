@@ -287,4 +287,5 @@ function applyFilters(){
     buildStatusTable(filteredData);
 
     updateCharts(filteredData);
+    buildDailySummaryTable(filteredData);
 }
