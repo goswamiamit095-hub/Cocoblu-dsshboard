@@ -353,10 +353,7 @@ function applyFilters(){
         endDate.setHours(23,59,59,999);
     }
 
-    filteredData =
-    masterData.filter(row=>{
-    }
-                      );
+    filteredData = masterData.filter(row=>{
         const searchMatch =
 
         !search ||
