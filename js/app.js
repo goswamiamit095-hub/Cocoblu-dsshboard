@@ -89,3 +89,15 @@ Papa.parse(CSV_URL,{
         "CSV Loading Error";
     }
 });
+document
+.getElementById("metricSelector")
+.addEventListener(
+    "change",
+    ()=>{
+
+        buildMetricTable(
+            filteredData
+        );
+
+    }
+);
