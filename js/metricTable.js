@@ -14,7 +14,27 @@ function buildMetricTable(data){
     ].sort();
 
     const dateMap = {};
+const dateTotals = {};
 
+data.forEach(row=>{
+
+    const dateKey =
+    `${String(row.day).padStart(2,"0")}-${monthNames[row.month]}-${row.year}`;
+
+    if(!dateTotals[dateKey]){
+
+        dateTotals[dateKey] = {
+            gmv:0,
+            unit:0,
+            payout:0
+        };
+    }
+
+    dateTotals[dateKey].gmv += Number(row.gmv)||0;
+    dateTotals[dateKey].unit += Number(row.unit)||0;
+    dateTotals[dateKey].payout += Number(row.payout)||0;
+
+});
     data.forEach(row=>{
 
         const dateKey =
@@ -32,20 +52,68 @@ function buildMetricTable(data){
             dateMap[dateKey].total = 0;
         }
 
-        let value = 0;
+       let value = 0;
 
-        if(metric==="gmv"){
-            value = Number(row.gmv)||0;
-        }
+if(metric==="gmv"){
+    value = Number(row.gmv)||0;
+}
 
-        if(metric==="unit"){
-            value = Number(row.unit)||0;
-        }
+else if(metric==="unit"){
+    value = Number(row.unit)||0;
+}
 
-        if(metric==="payout"){
-            value = Number(row.payout)||0;
-        }
+else if(metric==="payout"){
+    value = Number(row.payout)||0;
+}
 
+else if(metric==="asp"){
+
+    value =
+    (Number(row.unit)||0) > 0
+    ?
+    (Number(row.gmv)||0) /
+    (Number(row.unit)||0)
+    :
+    0;
+}
+        else if(metric==="gmvContribution"){
+
+    const total =
+    dateTotals[dateKey].gmv;
+
+    value =
+    total > 0
+    ?
+    ((Number(row.gmv)||0) / total) * 100
+    :
+    0;
+}
+
+else if(metric==="unitContribution"){
+
+    const total =
+    dateTotals[dateKey].unit;
+
+    value =
+    total > 0
+    ?
+    ((Number(row.unit)||0) / total) * 100
+    :
+    0;
+}
+
+else if(metric==="payoutContribution"){
+
+    const total =
+    dateTotals[dateKey].payout;
+
+    value =
+    total > 0
+    ?
+    ((Number(row.payout)||0) / total) * 100
+    :
+    0;
+}
         dateMap[dateKey][row.brand] += value;
         dateMap[dateKey].total += value;
 
@@ -88,7 +156,11 @@ function buildMetricTable(data){
             grandTotal[brand] += row[brand];
 
             bodyHTML +=
-            `<td>${Math.round(row[brand]).toLocaleString("en-IN")}</td>`;
+            `<td>${metric.includes("Contribution")
+?
+row[brand].toFixed(2) + "%"
+:
+Math.round(row[brand]).toLocaleString("en-IN")}</td>`;
 
         });
 
