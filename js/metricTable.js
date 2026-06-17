@@ -114,8 +114,37 @@ else if(metric==="payoutContribution"){
     :
     0;
 }
-        dateMap[dateKey][row.brand] += value;
-        dateMap[dateKey].total += value;
+        if(metric==="asp"){
+
+    if(!dateMap[dateKey][row.brand + "_gmv"]){
+        dateMap[dateKey][row.brand + "_gmv"] = 0;
+        dateMap[dateKey][row.brand + "_unit"] = 0;
+    }
+
+    dateMap[dateKey][row.brand + "_gmv"] += Number(row.gmv) || 0;
+    dateMap[dateKey][row.brand + "_unit"] += Number(row.unit) || 0;
+
+}
+else{
+
+    if(metric==="asp"){
+
+    if(!dateMap[dateKey][row.brand+"_gmv"]){
+        dateMap[dateKey][row.brand+"_gmv"] = 0;
+        dateMap[dateKey][row.brand+"_unit"] = 0;
+    }
+
+    dateMap[dateKey][row.brand+"_gmv"] += Number(row.gmv) || 0;
+    dateMap[dateKey][row.brand+"_unit"] += Number(row.unit) || 0;
+}
+else{
+
+    dateMap[dateKey][row.brand] += value;
+    dateMap[dateKey].total += value;
+
+}
+
+}
 
     });
 
@@ -153,16 +182,38 @@ else if(metric==="payoutContribution"){
 
         brands.forEach(brand=>{
 
-            grandTotal[brand] += row[brand];
+    if(metric==="asp"){
 
-            bodyHTML +=
-            `<td>${metric.includes("Contribution")
-?
-row[brand].toFixed(2) + "%"
-:
-Math.round(row[brand]).toLocaleString("en-IN")}</td>`;
+        const gmv =
+        row[brand+"_gmv"] || 0;
 
-        });
+        const unit =
+        row[brand+"_unit"] || 0;
+
+        const asp =
+        unit > 0
+        ? gmv / unit
+        : 0;
+
+        bodyHTML +=
+        `<td>${asp.toFixed(2)}</td>`;
+
+    }
+
+    else{
+
+        grandTotal[brand] += row[brand];
+
+        bodyHTML +=
+        `<td>${
+            metric.includes("Contribution")
+            ? row[brand].toFixed(2) + "%"
+            : Math.round(row[brand]).toLocaleString("en-IN")
+        }</td>`;
+
+    }
+
+});
 
         overallTotal += row.total;
 
