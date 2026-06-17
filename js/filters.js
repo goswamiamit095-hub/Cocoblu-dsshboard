@@ -288,4 +288,5 @@ function applyFilters(){
 
     updateCharts(filteredData);
     buildDailySummaryTable(filteredData);
+    buildMetricTable(filteredData);
 }
