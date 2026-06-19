@@ -1,6 +1,127 @@
+let metricChart = null;
 let brandChart = null;
 let categoryChart = null;
 let trendChart = null;
+
+function updateMetricChart(data){
+
+    const metric =
+    document.getElementById(
+        "metricSelector"
+    ).value;
+
+    const brands =
+    [...new Set(
+        data.map(
+            x => String(x.brand).trim()
+        )
+    )].sort();
+
+    const brandTotals = {};
+
+    brands.forEach(
+        brand =>
+        brandTotals[brand] = 0
+    );
+
+    data.forEach(row=>{
+
+        if(metric==="gmv"){
+            brandTotals[row.brand] += Number(row.gmv)||0;
+        }
+
+        else if(metric==="unit"){
+            brandTotals[row.brand] += Number(row.unit)||0;
+        }
+
+        else if(metric==="payout"){
+            brandTotals[row.brand] += Number(row.payout)||0;
+        }
+
+        else if(metric==="asp"){
+
+            if(!brandTotals[row.brand+"_gmv"]){
+                brandTotals[row.brand+"_gmv"] = 0;
+                brandTotals[row.brand+"_unit"] = 0;
+            }
+
+            brandTotals[row.brand+"_gmv"] += Number(row.gmv)||0;
+            brandTotals[row.brand+"_unit"] += Number(row.unit)||0;
+        }
+
+    });
+
+    let labels = [];
+    let values = [];
+
+    brands.forEach(brand=>{
+
+        labels.push(brand);
+
+        if(metric==="asp"){
+
+            const gmv =
+            brandTotals[brand+"_gmv"] || 0;
+
+            const unit =
+            brandTotals[brand+"_unit"] || 0;
+
+            values.push(
+                unit > 0
+                ? gmv/unit
+                : 0
+            );
+
+        }
+        else{
+
+            values.push(
+                brandTotals[brand]
+            );
+
+        }
+
+    });
+
+    if(metricChart){
+        metricChart.destroy();
+    }
+
+    metricChart =
+    new Chart(
+
+        document
+        .getElementById("metricChart"),
+
+        {
+
+            type:"bar",
+
+            data:{
+                labels:labels,
+
+                datasets:[{
+                    label:metric.toUpperCase(),
+                    data:values
+                }]
+            },
+
+            options:{
+                responsive:true,
+                maintainAspectRatio:false
+            }
+
+        }
+
+    );
+
+    document.getElementById(
+        "metricChartTitle"
+    ).innerText =
+    metric.toUpperCase() +
+    " By Brand";
+
+}
 
 function updateCharts(data){
 
