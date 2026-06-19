@@ -287,6 +287,30 @@ function applyFilters(){
     buildStatusTable(filteredData);
 
     updateCharts(filteredData);
+    updateMetricChart(filteredData);
     buildDailySummaryTable(filteredData);
     buildMetricTable(filteredData);
+}
+const metricSelector =
+document.getElementById(
+    "metricSelector"
+);
+
+if(metricSelector){
+
+    metricSelector.addEventListener(
+        "change",
+        ()=>{
+
+            buildMetricTable(
+                filteredData
+            );
+
+            updateMetricChart(
+                filteredData
+            );
+
+        }
+    );
+
 }
