@@ -1,19 +1,14 @@
 function buildMetricTable(data){
 
-    const metric =
-    document.getElementById(
-        "metricSelector"
-    ).value;
+const metric =
+document.getElementById("metricSelector").value;
 
-    const brands = [
-        ...new Set(
-            data.map(
-                x => String(x.brand).trim()
-            )
-        )
-    ].sort();
+const brands =
+[...new Set(
+    data.map(x => String(x.brand).trim())
+)].sort();
 
-    const dateMap = {};
+const dateMap = {};
 const dateTotals = {};
 
 data.forEach(row=>{
@@ -28,6 +23,7 @@ data.forEach(row=>{
             unit:0,
             payout:0
         };
+
     }
 
     dateTotals[dateKey].gmv += Number(row.gmv)||0;
@@ -35,208 +31,240 @@ data.forEach(row=>{
     dateTotals[dateKey].payout += Number(row.payout)||0;
 
 });
-    data.forEach(row=>{
 
-        const dateKey =
-        `${String(row.day).padStart(2,"0")}-${monthNames[row.month]}-${row.year}`;
+data.forEach(row=>{
 
-        if(!dateMap[dateKey]){
+    const dateKey =
+    `${String(row.day).padStart(2,"0")}-${monthNames[row.month]}-${row.year}`;
 
-            dateMap[dateKey] = {};
+    if(!dateMap[dateKey]){
 
-            brands.forEach(
-                brand =>
-                dateMap[dateKey][brand] = 0
-            );
+        dateMap[dateKey] = {
+            total:0
+        };
 
-            dateMap[dateKey].total = 0;
-        }
+        brands.forEach(brand=>{
 
-       let value = 0;
+            dateMap[dateKey][brand] = 0;
+            dateMap[dateKey][brand+"_gmv"] = 0;
+            dateMap[dateKey][brand+"_unit"] = 0;
 
-if(metric==="gmv"){
-    value = Number(row.gmv)||0;
-}
+        });
 
-else if(metric==="unit"){
-    value = Number(row.unit)||0;
-}
-
-else if(metric==="payout"){
-    value = Number(row.payout)||0;
-}
-
-else if(metric==="asp"){
-
-    value =
-    (Number(row.unit)||0) > 0
-    ?
-    (Number(row.gmv)||0) /
-    (Number(row.unit)||0)
-    :
-    0;
-}
-        else if(metric==="gmvContribution"){
-
-    const total =
-    dateTotals[dateKey].gmv;
-
-    value =
-    total > 0
-    ?
-    ((Number(row.gmv)||0) / total) * 100
-    :
-    0;
-}
-
-else if(metric==="unitContribution"){
-
-    const total =
-    dateTotals[dateKey].unit;
-
-    value =
-    total > 0
-    ?
-    ((Number(row.unit)||0) / total) * 100
-    :
-    0;
-}
-
-else if(metric==="payoutContribution"){
-
-    const total =
-    dateTotals[dateKey].payout;
-
-    value =
-    total > 0
-    ?
-    ((Number(row.payout)||0) / total) * 100
-    :
-    0;
-}
-        if(metric==="asp"){
-
-    if(!dateMap[dateKey][row.brand + "_gmv"]){
-        dateMap[dateKey][row.brand + "_gmv"] = 0;
-        dateMap[dateKey][row.brand + "_unit"] = 0;
     }
-
-    dateMap[dateKey][row.brand + "_gmv"] += Number(row.gmv) || 0;
-    dateMap[dateKey][row.brand + "_unit"] += Number(row.unit) || 0;
-
-}
-else{
 
     if(metric==="asp"){
 
-    if(!dateMap[dateKey][row.brand+"_gmv"]){
-        dateMap[dateKey][row.brand+"_gmv"] = 0;
-        dateMap[dateKey][row.brand+"_unit"] = 0;
+        dateMap[dateKey][row.brand+"_gmv"] += Number(row.gmv)||0;
+        dateMap[dateKey][row.brand+"_unit"] += Number(row.unit)||0;
+
+        return;
     }
 
-    dateMap[dateKey][row.brand+"_gmv"] += Number(row.gmv) || 0;
-    dateMap[dateKey][row.brand+"_unit"] += Number(row.unit) || 0;
-}
-else{
+    let value = 0;
+
+    if(metric==="gmv"){
+        value = Number(row.gmv)||0;
+    }
+
+    else if(metric==="unit"){
+        value = Number(row.unit)||0;
+    }
+
+    else if(metric==="payout"){
+        value = Number(row.payout)||0;
+    }
+
+    else if(metric==="gmvContribution"){
+
+        value =
+        dateTotals[dateKey].gmv > 0
+        ?
+        ((Number(row.gmv)||0) /
+        dateTotals[dateKey].gmv) * 100
+        :
+        0;
+
+    }
+
+    else if(metric==="unitContribution"){
+
+        value =
+        dateTotals[dateKey].unit > 0
+        ?
+        ((Number(row.unit)||0) /
+        dateTotals[dateKey].unit) * 100
+        :
+        0;
+
+    }
+
+    else if(metric==="payoutContribution"){
+
+        value =
+        dateTotals[dateKey].payout > 0
+        ?
+        ((Number(row.payout)||0) /
+        dateTotals[dateKey].payout) * 100
+        :
+        0;
+
+    }
 
     dateMap[dateKey][row.brand] += value;
     dateMap[dateKey].total += value;
 
-}
+});
 
-}
+let headHTML =
+"<tr><th>Date</th>";
 
-    });
+brands.forEach(brand=>{
+    headHTML += `<th>${brand}</th>`;
+});
 
-    let headHTML =
-    "<tr><th>Date</th>";
+headHTML += "<th>Total</th></tr>";
 
-    brands.forEach(
-        brand =>
-        headHTML += `<th>${brand}</th>`
+document.querySelector(
+    "#metricTable thead"
+).innerHTML = headHTML;
+
+let bodyHTML = "";
+
+const grandTotal = {};
+
+brands.forEach(brand=>{
+    grandTotal[brand] = 0;
+});
+
+let overallTotal = 0;
+
+Object.entries(dateMap)
+
+.sort((a,b)=>{
+
+    const p1 = a[0].split("-");
+    const p2 = b[0].split("-");
+
+    const d1 =
+    new Date(
+        p1[2],
+        Object.keys(monthNames)
+        .find(k=>monthNames[k]===p1[1]) - 1,
+        p1[0]
     );
 
-    headHTML +=
-    "<th>Total</th></tr>";
-
-    document.querySelector(
-        "#metricTable thead"
-    ).innerHTML = headHTML;
-
-    let bodyHTML = "";
-
-    const grandTotal = {};
-
-    brands.forEach(
-        brand =>
-        grandTotal[brand] = 0
+    const d2 =
+    new Date(
+        p2[2],
+        Object.keys(monthNames)
+        .find(k=>monthNames[k]===p2[1]) - 1,
+        p2[0]
     );
 
-    let overallTotal = 0;
+    return d1 - d2;
 
-    Object.entries(dateMap)
+})
 
-    .forEach(([date,row])=>{
+.forEach(([date,row])=>{
 
-        bodyHTML += `<tr><td>${date}</td>`;
+    bodyHTML += `<tr><td>${date}</td>`;
 
-        brands.forEach(brand=>{
+    let rowTotal = 0;
 
-    if(metric==="asp"){
+    brands.forEach(brand=>{
 
-        const gmv =
-        row[brand+"_gmv"] || 0;
+        let displayValue = 0;
 
-        const unit =
-        row[brand+"_unit"] || 0;
+        if(metric==="asp"){
 
-        const asp =
-        unit > 0
-        ? gmv / unit
-        : 0;
+            const gmv =
+            row[brand+"_gmv"] || 0;
 
-        bodyHTML +=
-        `<td>${asp.toFixed(2)}</td>`;
+            const unit =
+            row[brand+"_unit"] || 0;
 
-    }
+            displayValue =
+            unit > 0
+            ? gmv / unit
+            : 0;
 
-    else{
+        }
 
-        grandTotal[brand] += row[brand];
+        else{
+
+            displayValue =
+            row[brand] || 0;
+
+            grandTotal[brand] += displayValue;
+
+        }
+
+        rowTotal += displayValue;
 
         bodyHTML +=
         `<td>${
             metric.includes("Contribution")
-            ? row[brand].toFixed(2) + "%"
-            : Math.round(row[brand]).toLocaleString("en-IN")
+            ? displayValue.toFixed(2)+"%"
+            : metric==="asp"
+            ? displayValue.toFixed(2)
+            : Math.round(displayValue).toLocaleString("en-IN")
         }</td>`;
+
+    });
+
+    overallTotal += rowTotal;
+
+    if(metric.includes("Contribution")){
+
+        bodyHTML +=
+        `<td>100.00%</td></tr>`;
+
+    }
+    else if(metric==="asp"){
+
+        bodyHTML +=
+        `<td>${rowTotal.toFixed(2)}</td></tr>`;
+
+    }
+    else{
+
+        bodyHTML +=
+        `<td>${Math.round(rowTotal).toLocaleString("en-IN")}</td></tr>`;
 
     }
 
 });
 
-        overallTotal += row.total;
+bodyHTML +=
+`<tr style="font-weight:bold;background:#f2f2f2;"><td>TOTAL</td>`;
 
-        bodyHTML +=
-        `<td>${Math.round(row.total).toLocaleString("en-IN")}</td></tr>`;
-
-    });
+brands.forEach(brand=>{
 
     bodyHTML +=
-    `<tr style="font-weight:bold;background:#f2f2f2;"><td>TOTAL</td>`;
+    `<td>${
+        metric.includes("Contribution")
+        ? grandTotal[brand].toFixed(2)+"%"
+        : Math.round(grandTotal[brand]).toLocaleString("en-IN")
+    }</td>`;
 
-    brands.forEach(brand=>{
+});
 
-        bodyHTML +=
-        `<td>${Math.round(grandTotal[brand]).toLocaleString("en-IN")}</td>`;
+if(metric.includes("Contribution")){
 
-    });
+    bodyHTML +=
+    `<td>100.00%</td></tr>`;
+
+}
+else{
 
     bodyHTML +=
     `<td>${Math.round(overallTotal).toLocaleString("en-IN")}</td></tr>`;
 
-    document.querySelector(
-        "#metricTable tbody"
-    ).innerHTML = bodyHTML;
+}
+
+document.querySelector(
+    "#metricTable tbody"
+).innerHTML = bodyHTML;
 
 }
