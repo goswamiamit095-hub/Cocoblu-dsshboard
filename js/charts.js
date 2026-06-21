@@ -18,6 +18,11 @@ function updateMetricChart(data){
     )].sort();
 
     const brandTotals = {};
+    const totalData = {
+        gmv:0,
+        unit:0,
+        payout:0
+    };
 
     brands.forEach(
         brand =>
@@ -26,33 +31,73 @@ function updateMetricChart(data){
 
     data.forEach(row=>{
 
+        totalData.gmv += Number(row.gmv) || 0;
+        totalData.unit += Number(row.unit) || 0;
+        totalData.payout += Number(row.payout) || 0;
+
         if(metric==="gmv"){
-            brandTotals[row.brand] += Number(row.gmv)||0;
+
+            brandTotals[row.brand] +=
+            Number(row.gmv) || 0;
+
         }
 
         else if(metric==="unit"){
-            brandTotals[row.brand] += Number(row.unit)||0;
+
+            brandTotals[row.brand] +=
+            Number(row.unit) || 0;
+
         }
 
         else if(metric==="payout"){
-            brandTotals[row.brand] += Number(row.payout)||0;
+
+            brandTotals[row.brand] +=
+            Number(row.payout) || 0;
+
         }
 
         else if(metric==="asp"){
 
             if(!brandTotals[row.brand+"_gmv"]){
+
                 brandTotals[row.brand+"_gmv"] = 0;
                 brandTotals[row.brand+"_unit"] = 0;
+
             }
 
-            brandTotals[row.brand+"_gmv"] += Number(row.gmv)||0;
-            brandTotals[row.brand+"_unit"] += Number(row.unit)||0;
+            brandTotals[row.brand+"_gmv"] +=
+            Number(row.gmv) || 0;
+
+            brandTotals[row.brand+"_unit"] +=
+            Number(row.unit) || 0;
+
+        }
+
+        else if(metric==="gmvContribution"){
+
+            brandTotals[row.brand] +=
+            Number(row.gmv) || 0;
+
+        }
+
+        else if(metric==="unitContribution"){
+
+            brandTotals[row.brand] +=
+            Number(row.unit) || 0;
+
+        }
+
+        else if(metric==="payoutContribution"){
+
+            brandTotals[row.brand] +=
+            Number(row.payout) || 0;
+
         }
 
     });
 
-    let labels = [];
-    let values = [];
+    const labels = [];
+    const values = [];
 
     brands.forEach(brand=>{
 
@@ -68,11 +113,48 @@ function updateMetricChart(data){
 
             values.push(
                 unit > 0
-                ? gmv/unit
+                ? gmv / unit
                 : 0
             );
 
         }
+
+        else if(metric==="gmvContribution"){
+
+            values.push(
+                totalData.gmv > 0
+                ?
+                (brandTotals[brand] / totalData.gmv) * 100
+                :
+                0
+            );
+
+        }
+
+        else if(metric==="unitContribution"){
+
+            values.push(
+                totalData.unit > 0
+                ?
+                (brandTotals[brand] / totalData.unit) * 100
+                :
+                0
+            );
+
+        }
+
+        else if(metric==="payoutContribution"){
+
+            values.push(
+                totalData.payout > 0
+                ?
+                (brandTotals[brand] / totalData.payout) * 100
+                :
+                0
+            );
+
+        }
+
         else{
 
             values.push(
@@ -89,30 +171,27 @@ function updateMetricChart(data){
 
     metricChart =
     new Chart(
-
-        document
-        .getElementById("metricChart"),
-
+        document.getElementById(
+            "metricChart"
+        ),
         {
-
             type:"bar",
 
             data:{
                 labels:labels,
-
-                datasets:[{
-                    label:metric.toUpperCase(),
-                    data:values
-                }]
+                datasets:[
+                    {
+                        label:metric,
+                        data:values
+                    }
+                ]
             },
 
             options:{
                 responsive:true,
                 maintainAspectRatio:false
             }
-
         }
-
     );
 
     document.getElementById(
@@ -152,28 +231,31 @@ function buildBrandChart(data){
     .sort((a,b)=>b[1]-a[1])
     .slice(0,10);
 
-    const labels =
-    topBrands.map(x=>x[0]);
-
-    const values =
-    topBrands.map(x=>x[1]);
-
     if(brandChart){
         brandChart.destroy();
     }
 
     brandChart =
     new Chart(
-        document.getElementById("brandChart"),
+        document.getElementById(
+            "brandChart"
+        ),
         {
             type:"bar",
+
             data:{
-                labels:labels,
-                datasets:[{
-                    label:"GMV",
-                    data:values
-                }]
+                labels:
+                topBrands.map(x=>x[0]),
+
+                datasets:[
+                    {
+                        label:"GMV",
+                        data:
+                        topBrands.map(x=>x[1])
+                    }
+                ]
             },
+
             options:{
                 responsive:true
             }
@@ -204,15 +286,24 @@ function buildCategoryChart(data){
 
     categoryChart =
     new Chart(
-        document.getElementById("categoryChart"),
+        document.getElementById(
+            "categoryChart"
+        ),
         {
             type:"pie",
+
             data:{
-                labels:Object.keys(categoryMap),
-                datasets:[{
-                    data:Object.values(categoryMap)
-                }]
+                labels:
+                Object.keys(categoryMap),
+
+                datasets:[
+                    {
+                        data:
+                        Object.values(categoryMap)
+                    }
+                ]
             },
+
             options:{
                 responsive:true
             }
@@ -227,11 +318,11 @@ function buildTrendChart(data){
 
     data.forEach(row=>{
 
-        const label =
-        `${row.month}-${row.year}`;
+        const dateLabel =
+        `${String(row.day).padStart(2,"0")}-${monthNames[row.month]}`;
 
-        trendMap[label] =
-        (trendMap[label] || 0)
+        trendMap[dateLabel] =
+        (trendMap[dateLabel] || 0)
         +
         (Number(row.gmv) || 0);
 
@@ -243,16 +334,25 @@ function buildTrendChart(data){
 
     trendChart =
     new Chart(
-        document.getElementById("trendChart"),
+        document.getElementById(
+            "trendChart"
+        ),
         {
             type:"line",
+
             data:{
-                labels:Object.keys(trendMap),
-                datasets:[{
-                    label:"GMV",
-                    data:Object.values(trendMap)
-                }]
+                labels:
+                Object.keys(trendMap),
+
+                datasets:[
+                    {
+                        label:"Daily GMV",
+                        data:
+                        Object.values(trendMap)
+                    }
+                ]
             },
+
             options:{
                 responsive:true
             }
