@@ -1,7 +1,16 @@
 let metricChart = null;
-let brandChart = null;
 let categoryChart = null;
 let trendChart = null;
+
+function updateCharts(data){
+
+    updateMetricChart(data);
+
+    buildCategoryChart(data);
+
+    buildTrendChart(data);
+
+}
 
 function updateMetricChart(data){
 
@@ -18,102 +27,79 @@ function updateMetricChart(data){
     )].sort();
 
     const brandTotals = {};
-    const totalData = {
-        gmv:0,
-        unit:0,
-        payout:0
-    };
 
-    brands.forEach(
-        brand =>
-        brandTotals[brand] = 0
-    );
+    brands.forEach(brand=>{
+
+        brandTotals[brand] = {
+            gmv:0,
+            unit:0,
+            payout:0
+        };
+
+    });
 
     data.forEach(row=>{
 
-        totalData.gmv += Number(row.gmv) || 0;
-        totalData.unit += Number(row.unit) || 0;
-        totalData.payout += Number(row.payout) || 0;
+        const brand =
+        String(row.brand).trim();
 
-        if(metric==="gmv"){
+        brandTotals[brand].gmv +=
+        Number(row.gmv) || 0;
 
-            brandTotals[row.brand] +=
-            Number(row.gmv) || 0;
+        brandTotals[brand].unit +=
+        Number(row.unit) || 0;
 
-        }
-
-        else if(metric==="unit"){
-
-            brandTotals[row.brand] +=
-            Number(row.unit) || 0;
-
-        }
-
-        else if(metric==="payout"){
-
-            brandTotals[row.brand] +=
-            Number(row.payout) || 0;
-
-        }
-
-        else if(metric==="asp"){
-
-            if(!brandTotals[row.brand+"_gmv"]){
-
-                brandTotals[row.brand+"_gmv"] = 0;
-                brandTotals[row.brand+"_unit"] = 0;
-
-            }
-
-            brandTotals[row.brand+"_gmv"] +=
-            Number(row.gmv) || 0;
-
-            brandTotals[row.brand+"_unit"] +=
-            Number(row.unit) || 0;
-
-        }
-
-        else if(metric==="gmvContribution"){
-
-            brandTotals[row.brand] +=
-            Number(row.gmv) || 0;
-
-        }
-
-        else if(metric==="unitContribution"){
-
-            brandTotals[row.brand] +=
-            Number(row.unit) || 0;
-
-        }
-
-        else if(metric==="payoutContribution"){
-
-            brandTotals[row.brand] +=
-            Number(row.payout) || 0;
-
-        }
+        brandTotals[brand].payout +=
+        Number(row.payout) || 0;
 
     });
 
     const labels = [];
     const values = [];
 
+    let totalGMV = 0;
+    let totalUnit = 0;
+    let totalPayout = 0;
+
+    Object.values(brandTotals)
+    .forEach(x=>{
+
+        totalGMV += x.gmv;
+        totalUnit += x.unit;
+        totalPayout += x.payout;
+
+    });
+
     brands.forEach(brand=>{
 
         labels.push(brand);
 
-        if(metric==="asp"){
+        const item =
+        brandTotals[brand];
 
-            const gmv =
-            brandTotals[brand+"_gmv"] || 0;
+        if(metric==="gmv"){
 
-            const unit =
-            brandTotals[brand+"_unit"] || 0;
+            values.push(item.gmv);
+
+        }
+
+        else if(metric==="unit"){
+
+            values.push(item.unit);
+
+        }
+
+        else if(metric==="payout"){
+
+            values.push(item.payout);
+
+        }
+
+        else if(metric==="asp"){
 
             values.push(
-                unit > 0
-                ? gmv / unit
+                item.unit > 0
+                ? item.gmv/item.unit
                 : 0
             );
 
@@ -122,11 +108,9 @@ function updateMetricChart(data){
         else if(metric==="gmvContribution"){
 
             values.push(
-                totalData.gmv > 0
-                ?
-                (brandTotals[brand] / totalData.gmv) * 100
-                :
-                0
+                totalGMV > 0
+                ? (item.gmv/totalGMV)*100
+                : 0
             );
 
         }
@@ -134,11 +118,9 @@ function updateMetricChart(data){
         else if(metric==="unitContribution"){
 
             values.push(
-                totalData.unit > 0
-                ?
-                (brandTotals[brand] / totalData.unit) * 100
-                :
-                0
+                totalUnit > 0
+                ? (item.unit/totalUnit)*100
+                : 0
             );
 
         }
@@ -146,19 +128,9 @@ function updateMetricChart(data){
         else if(metric==="payoutContribution"){
 
             values.push(
-                totalData.payout > 0
-                ?
-                (brandTotals[brand] / totalData.payout) * 100
-                :
-                0
-            );
-
-        }
-
-        else{
-
-            values.push(
-                brandTotals[brand]
+                totalPayout > 0
+                ? (item.payout/totalPayout)*100
+                : 0
             );
 
         }
@@ -166,32 +138,46 @@ function updateMetricChart(data){
     });
 
     if(metricChart){
+
         metricChart.destroy();
+
     }
 
     metricChart =
     new Chart(
+
         document.getElementById(
             "metricChart"
         ),
+
         {
+
             type:"bar",
 
             data:{
+
                 labels:labels,
-                datasets:[
-                    {
-                        label:metric,
-                        data:values
-                    }
-                ]
+
+                datasets:[{
+
+                    label:metric,
+
+                    data:values
+
+                }]
+
             },
 
             options:{
+
                 responsive:true,
+
                 maintainAspectRatio:false
+
             }
+
         }
+
     );
 
     document.getElementById(
@@ -199,68 +185,6 @@ function updateMetricChart(data){
     ).innerText =
     metric.toUpperCase() +
     " By Brand";
-
-}
-
-function updateCharts(data){
-
-    buildBrandChart(data);
-    buildCategoryChart(data);
-    buildTrendChart(data);
-
-}
-
-function buildBrandChart(data){
-
-    const brandMap = {};
-
-    data.forEach(row=>{
-
-        const brand =
-        row.brand || "NA";
-
-        brandMap[brand] =
-        (brandMap[brand] || 0)
-        +
-        (Number(row.gmv) || 0);
-
-    });
-
-    const topBrands =
-    Object.entries(brandMap)
-    .sort((a,b)=>b[1]-a[1])
-    .slice(0,10);
-
-    if(brandChart){
-        brandChart.destroy();
-    }
-
-    brandChart =
-    new Chart(
-        document.getElementById(
-            "brandChart"
-        ),
-        {
-            type:"bar",
-
-            data:{
-                labels:
-                topBrands.map(x=>x[0]),
-
-                datasets:[
-                    {
-                        label:"GMV",
-                        data:
-                        topBrands.map(x=>x[1])
-                    }
-                ]
-            },
-
-            options:{
-                responsive:true
-            }
-        }
-    );
 
 }
 
@@ -281,33 +205,48 @@ function buildCategoryChart(data){
     });
 
     if(categoryChart){
+
         categoryChart.destroy();
+
     }
 
     categoryChart =
     new Chart(
+
         document.getElementById(
             "categoryChart"
         ),
+
         {
+
             type:"pie",
 
             data:{
-                labels:
-                Object.keys(categoryMap),
 
-                datasets:[
-                    {
-                        data:
-                        Object.values(categoryMap)
-                    }
-                ]
+                labels:
+                Object.keys(
+                    categoryMap
+                ),
+
+                datasets:[{
+
+                    data:
+                    Object.values(
+                        categoryMap
+                    )
+
+                }]
+
             },
 
             options:{
+
                 responsive:true
+
             }
+
         }
+
     );
 
 }
@@ -318,45 +257,61 @@ function buildTrendChart(data){
 
     data.forEach(row=>{
 
-        const dateLabel =
+        const label =
         `${String(row.day).padStart(2,"0")}-${monthNames[row.month]}`;
 
-        trendMap[dateLabel] =
-        (trendMap[dateLabel] || 0)
+        trendMap[label] =
+        (trendMap[label] || 0)
         +
         (Number(row.gmv) || 0);
 
     });
 
     if(trendChart){
+
         trendChart.destroy();
+
     }
 
     trendChart =
     new Chart(
+
         document.getElementById(
             "trendChart"
         ),
+
         {
+
             type:"line",
 
             data:{
-                labels:
-                Object.keys(trendMap),
 
-                datasets:[
-                    {
-                        label:"Daily GMV",
-                        data:
-                        Object.values(trendMap)
-                    }
-                ]
+                labels:
+                Object.keys(
+                    trendMap
+                ),
+
+                datasets:[{
+
+                    label:"GMV",
+
+                    data:
+                    Object.values(
+                        trendMap
+                    )
+
+                }]
+
             },
 
             options:{
+
                 responsive:true
+
             }
+
         }
+
     );
 
 }
